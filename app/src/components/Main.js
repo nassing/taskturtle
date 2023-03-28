@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 
-import AuthPage from './Auth/AuthPage';
-import App from './components/App';
+import App from './App';
+import AuthPage from './auth/AuthPage';
 
-export default function AuthPage() {
+export default function Main() {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
@@ -28,7 +28,7 @@ export default function AuthPage() {
 
   if(!loggedIn) {
     return (
-        <AuthPage register={register} login={login}/>
+      <AuthPage register={register} login={login}/>
     );
   } else {
     return (

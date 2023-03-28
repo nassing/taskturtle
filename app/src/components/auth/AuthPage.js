@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 
-import AuthTitle from './AuthTitle';
+import Title from '../global/Title';
 import AuthForm from './AuthForm';
 
 export default function AuthPage({register, login}) {
 
   return(
     <>
-      <AuthTitle />
+      <Title />
       <AuthForm />
     </>
   )

@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;500&display=swap');
+
+.title {
+  font-size: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.title h1 {
+    margin: 0;
+}

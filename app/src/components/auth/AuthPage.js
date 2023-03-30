@@ -8,7 +8,7 @@ export default function AuthPage({register, login}) {
   return(
     <>
       <Title />
-      <AuthForm />
+      <AuthForm register={register} login={login}/>
     </>
   )
 }

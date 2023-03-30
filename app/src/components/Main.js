@@ -25,18 +25,18 @@ export default function Main() {
     setLoggedIn(false);
   }
 
-  // if(!loggedIn) {
-  //   return (
-  //     <AuthPage register={register} login={login}/>
-  //   );
-  // } else {
-  //   return (
-  //     <App username={username} logout={logout}/>
-  //   )
-  // }
+  if(!loggedIn) {
+    return (
+      <AuthPage register={register} login={login} />
+    );
+  } else {
+    return (
+      <App username={username} logout={logout}/>
+    )
+  }
 
-  return (
-    <App username={username} logout={logout}/>
-  );
+  // return (
+  //   <App username={username} logout={logout} />
+  // );
   
 }

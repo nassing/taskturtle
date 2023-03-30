@@ -1,0 +1,29 @@
+.page-selection {
+    margin-top: 10rem;
+    display: flex;
+    gap: 15vw;
+    font-size: 300%;
+}
+
+.page-selection-button {
+    border: 2px solid white;
+    border-radius: 50px;
+    width: 25vw;
+    height: 13vh;
+    background: rgb(93, 148, 12);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-selection-button :hover {
+    border: 2px solid white;
+    border-radius: 50px;
+    width: 25vw;
+    height: 13vh;
+    background: rgb(70, 110, 9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}

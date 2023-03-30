@@ -1,0 +1,19 @@
+body {
+    background: #93EB95;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 500;
+    color: white;
+    display: flex;
+    justify-content: center;
+}
+
+#root {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}

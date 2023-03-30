@@ -1,0 +1,20 @@
+.top-bar {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.top-bar-right {
+    display: flex;
+    gap: 2rem;
+}
+
+.log-out {
+    cursor: pointer;
+}
+
+.back {
+    cursor: pointer;
+}

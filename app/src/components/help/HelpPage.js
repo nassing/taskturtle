@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 
-export default function Title() {
+export default function HelpPage() {
 
   return(
     <>
-      <h1>TaskTurtle</h1>
+      <h1>Help</h1>
     </>
   )
 }

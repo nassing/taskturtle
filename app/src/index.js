@@ -11,6 +11,7 @@ import './css/AuthPage.css';
 import './css/TopBar.css';
 import './css/PageSelection.css';
 import './css/TaskList.css';
+import './css/AskForHelp.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 
 import Title from '../global/Title';
 import AuthForm from './AuthForm';

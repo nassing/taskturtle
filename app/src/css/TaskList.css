@@ -1,0 +1,36 @@
+.task-list {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    gap: 2rem;
+}
+
+.task {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    border: 0.5rem solid white;
+    border-radius: 10px;
+}
+
+.task-user-info {
+    grid-area: 1 / 1 / 4 / 2;
+}
+
+.task-title {
+    grid-area: 1 / 2 / 2 / 5;
+}
+
+.task-description {
+    grid-area: 2 / 2 / 3 / 4;
+}
+
+.task-image {
+    grid-area: 2 / 4 / 3 / 5;
+}
+
+.task-other-info {
+    grid-area: 3 / 2 / 4 / 5;
+}

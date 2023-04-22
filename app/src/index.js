@@ -10,6 +10,7 @@ import './css/AuthForm.css';
 import './css/AuthPage.css';
 import './css/TopBar.css';
 import './css/PageSelection.css';
+import './css/TaskList.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

@@ -1,2 +1,3 @@
-`./api.sh` pour lancer l'API
-`./app.sh` pour lancer le front-end
+`./api` pour lancer l'API
+
+`./app` pour lancer le front-end

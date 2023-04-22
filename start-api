@@ -1,4 +1,5 @@
 #!/bin/bash
 
 cd api
+/bin/python3 -m pip install -r requirements.txt
 /bin/python3 api.py

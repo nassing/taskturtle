@@ -7,7 +7,45 @@ export default function AskForHelpPage() {
   const [taskLocation, setTaskLocation] = useState('');
   const [taskReward, setTaskReward] = useState('');
 
-  const handleSubmit = () => { }
+  function handleSubmit() { }
+  //   // if(username === null || videoLink === null || username === '' || videoLink === '')
+  //   // {
+  //   //   return ;
+  //   // }
+
+  //   const data = {
+  //     username: username,
+  //     taskTitle: taskTitle,
+  //     taskDescription: taskDescription,
+  //     taskLocation: taskLocation,
+  //     taskReward: taskReward
+  //   };
+    
+  //   fetch('https://yousub-api.nassing.tk/input', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify(data)
+  //   })
+  //   .then(response => {
+  //     if (response.ok) {
+  //       response.text().then(text => {
+  //         if(text === "0") {
+  //           setUserInput('');     
+  //         }
+  //         else if(text === "1")
+  //         {
+  //           //Error
+  //         }
+  //       })
+  //     } else {
+  //       throw new Error('Error adding element');
+  //     }
+  //   })
+  //   .catch(error => console.log(error.message)); 
+  // }    
+
 
   return(
   <>

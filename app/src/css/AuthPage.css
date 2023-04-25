@@ -1,0 +1,14 @@
+.login {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    gap: 2rem;
+}
+
+.guest-login {
+    border: 3px solid white;
+    padding: 1rem;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+}

@@ -1,14 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Title from '../global/Title';
-import AuthForm from './AuthForm';
 
 export default function AuthPage({register, login}) {
 
+  const [fieldUsername, setFieldUsername] = useState('');
+  const [fieldPassword, setFieldPassword] = useState('');
+
+  const handleUsernameChange = (event) => {
+    setFieldUsername(event.target.value);
+  }
+
+  const handlePasswordChange = (event) => {
+    setFieldPassword(event.target.value);
+  }
+
+  const generateToken = () => {};
+
+  const generateTokenFromAuth0 = () => {};
+
+  const loginAsGuest = () => {
+    // const token = generateToken();
+    // login('guest', token);
+  }
+
   return(
     <>
+
       <Title />
-      <AuthForm register={register} login={login}/>
+      <h1>Ask for help and get paid for helping !</h1>
+
+      <div className="login">
+        <div className="login-form">
+          <label className="login-username">
+            <p>Username</p>
+            <input type="text" name="username" value={fieldUsername} onChange={handleUsernameChange} required />
+          </label>
+          <label className="login-password">
+            <p>Password</p>
+            <input type="password" name="password" value={fieldPassword} onChange={handlePasswordChange} required />
+          </label>
+          <div className="submit-buttons">
+            <input onClick={() => register(fieldUsername, fieldPassword)} type="submit" value="Register" />
+            <input onClick={() => login(fieldUsername, fieldPassword)} type="submit" value="Login" />
+          </div>
+        </div>
+
+        <div onClick={() => loginAsGuest()} className="guest-login">
+          <p>Continue as guest</p>
+        </div>
+      </div>
     </>
   )
 }

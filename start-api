@@ -2,4 +2,4 @@
 
 cd api
 /bin/python3 -m pip install -r requirements.txt
-/bin/python3 api.py
+/bin/python3 server.py

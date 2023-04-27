@@ -4,9 +4,28 @@ export default function HelpPage() {
 
   const [taskList, setTaskList] = useState([{title: "title", description: "description", user: "user", userProfilePicture: "linkToPicture", taskImage: "linkToImage", location: "location", postDate: "date", reward: "reward", status: "status"}, {title: "title", description: "description", user: "user", userProfilePicture: "linkToPicture", taskImage: "linkToImage", location: "location", postDate: "date", reward: "reward", status: "status"}]);
 
-  // getTaskList = () => {};
+  const getTaskList = () => {
+    fetch('http://localhost:4859/getTasks', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json;
+      }
+      else {
+        throw new Error('Something went wrong ...');
+      }
+    })
+    .then(data => {
+          setTaskList(data);
+        })
+    .catch(error => console.log(error.message));
+  }
 
-  // getTaskList();
+  getTaskList();
 
   return(
     <>

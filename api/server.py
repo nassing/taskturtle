@@ -7,13 +7,22 @@ from urllib.parse import quote_plus, urlencode
 
 from authlib.integrations.flask_client import OAuth
 from dotenv import find_dotenv, load_dotenv
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, redirect, render_template, session, url_for, request, jsonify
+
+from flask_cors import CORS
+
+import sqlite3
+
+from utilsdb import *
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
     load_dotenv(ENV_FILE)
 
 app = Flask(__name__)
+
+CORS(app)
+
 app.secret_key = "d912e4303bd96c542d0ed89510d0b790e59ab30929da915710e802c424e65f97"
 
 
@@ -71,5 +80,53 @@ def logout():
     )
 
 
+@app.route("/submitTask", methods=["POST"])
+def submitTask():
+    username = request.json.get('username')
+    taskTitle = request.json.get('taskTitle')
+    taskDescription = request.json.get('taskDescription')
+    taskLocation = request.json.get('taskLocation')
+    taskReward = request.json.get('taskReward')
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("INSERT INTO tasks (username, taskTitle, taskDescription, taskLocation, taskReward) VALUES (?, ?, ?, ?, ?)", (username, taskTitle, taskDescription, taskLocation, taskReward))
+            conn.commit()
+            return ""
+    except:
+        return "Error"
+    
+@app.route("/getTasks", methods=["GET"])
+def getTasks():
+    tasks = getUncompletedTasks()
+    return jsonify(tasks)
+
+@app.route("/guestRegister", methods=["POST"])
+def guestRegister():
+    token = request.json.get('token')
+    username = "guest" + token
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("INSERT INTO users (username, guest_token) VALUES (?, ?)", (username, token))
+            conn.commit()
+            return ""
+    except:
+        return "Error"
+    
+@app.route("/getUser", methods=["POST"])
+def getUser():
+    token = request.json.get('token')
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT username FROM users WHERE guest_token=?", (token,))
+            username = cur.fetchone()
+            print(username)
+            return jsonify({"username" : username})
+    except:
+        return "Error"
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=env.get("PORT", 3000))
+    app.run(host="0.0.0.0", port=env.get("PORT", 4859))

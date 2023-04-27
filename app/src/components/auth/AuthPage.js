@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Title from '../global/Title';
 
-export default function AuthPage({register, login}) {
+export default function AuthPage({register, registerAsGuest, login}) {
 
   const [fieldUsername, setFieldUsername] = useState('');
   const [fieldPassword, setFieldPassword] = useState('');
@@ -13,15 +13,6 @@ export default function AuthPage({register, login}) {
 
   const handlePasswordChange = (event) => {
     setFieldPassword(event.target.value);
-  }
-
-  const generateToken = () => {};
-
-  const generateTokenFromAuth0 = () => {};
-
-  const loginAsGuest = () => {
-    // const token = generateToken();
-    // login('guest', token);
   }
 
   return(
@@ -46,7 +37,7 @@ export default function AuthPage({register, login}) {
           </div>
         </div>
 
-        <div onClick={() => loginAsGuest()} className="guest-login">
+        <div onClick={() => registerAsGuest()} className="guest-login">
           <p>Continue as guest</p>
         </div>
       </div>

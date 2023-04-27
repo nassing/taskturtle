@@ -49,3 +49,16 @@ def completeTask(task_id):
             cursor.execute('UPDATE users SET balance = balance - ? WHERE id = ?', (reward, author_id))
             cursor.execute('UPDATE users SET balance = balance + ? WHERE id = ?', (reward, helper_id))
             cursor.commit()
+
+def addGuestUser(guest_token):
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO users (username, guest_token) VALUES (?)', ("user" + guest_token, guest_token))
+        cursor.commit()
+
+
+def addRegisteredUser(username, email):
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO users (username, email) VALUES (?, ?)', (username, email))
+        cursor.commit()

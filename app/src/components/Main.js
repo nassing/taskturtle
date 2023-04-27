@@ -20,12 +20,16 @@ export default function Main() {
       })
       .then(response => {
         if (response.ok) {
-          return response.json();          
+          return response.json();
           } else {
             console.log('Something went wrong ...');
           }
         })
         .then(data => {
+          if(data.error && data.error === "User not found") {
+            register(Cookies.get('token'), true);
+            getUser(Cookies.get('token'));
+          }
           console.log(data);
           setUsername(data.username);
           setBalance(data.balance);
@@ -94,7 +98,6 @@ export default function Main() {
   };
 
   const registerAsGuest = () => {
-    console.log(Cookies.get('isGuest'));
     if(Cookies.get('token') === undefined || Cookies.get('isGuest') === "false")
     {
       register(generateToken(), true)
@@ -111,6 +114,7 @@ export default function Main() {
   }
 
   const giveMoney = () => {
+    console.log("test");
     fetch('http://localhost:4859/giveMoney', {
       method: 'POST',
       headers: {
@@ -120,13 +124,14 @@ export default function Main() {
       })
       .then(response => {
         if (response.ok) {
-          return response.json();          
+          return response.json();
           } else {
             console.log('Something went wrong ...');
           }
         })
         .then(data => {
-          getUser();
+          console.log(data);
+          setBalance(data.balance);
         })
         .catch(error => console.log(error.message));
       }

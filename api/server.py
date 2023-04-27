@@ -121,11 +121,13 @@ def getUser():
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
             cur.execute("SELECT username, balance FROM users WHERE guest_token=?", (token,))
-            username, balance = cur.fetchone()
-            print(balance)
-            return jsonify({"username" : username, "balance" : balance})
-    except:
-        return "Error"
+            try:
+                username, balance = cur.fetchone()
+            except:
+                return jsonify({"error" : "User not found"})
+        return jsonify({"username" : username, "balance" : balance})
+    except Exception as e:
+        return jsonify({"error" : "getUser, " + str(e)})
     
 @app.route("/giveMoney", methods=["POST"])
 def giveMoney():
@@ -135,9 +137,11 @@ def giveMoney():
             cur = conn.cursor()
             cur.execute("UPDATE users SET balance = balance + ? WHERE username=?", (100, username))
             conn.commit()
-            return ""
-    except:
-        return "Error"
+            cur.execute("SELECT balance FROM users WHERE username=?", (username,))
+            balance = cur.fetchone()[0]
+            return jsonify({"balance" : balance})
+    except Exception as e:
+        return jsonify({"error" : "giveMoney, " + str(e)})
 
 
 if __name__ == "__main__":

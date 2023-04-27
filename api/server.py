@@ -120,10 +120,22 @@ def getUser():
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            cur.execute("SELECT username FROM users WHERE guest_token=?", (token,))
-            username = cur.fetchone()
-            print(username)
-            return jsonify({"username" : username})
+            cur.execute("SELECT username, balance FROM users WHERE guest_token=?", (token,))
+            username, balance = cur.fetchone()
+            print(balance)
+            return jsonify({"username" : username, "balance" : balance})
+    except:
+        return "Error"
+    
+@app.route("/giveMoney", methods=["POST"])
+def giveMoney():
+    username = request.json.get('username')
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("UPDATE users SET balance = balance + ? WHERE username=?", (100, username))
+            conn.commit()
+            return ""
     except:
         return "Error"
 

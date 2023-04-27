@@ -62,3 +62,15 @@ def addRegisteredUser(username, email):
         cursor = conn.cursor()
         cursor.execute('INSERT INTO users (username, email) VALUES (?, ?)', (username, email))
         cursor.commit()
+
+def getUserBalance(username):
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT balance FROM users WHERE username = ?', (username,))
+        return cursor.fetchone()[0]
+    
+def addUserBalance(username, amount):
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('UPDATE users SET balance = balance + ? WHERE username = ?', (amount, username))
+        cursor.commit()

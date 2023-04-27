@@ -1,8 +1,12 @@
 .page-selection {
     margin-top: 10rem;
     display: flex;
+    flex-wrap: wrap;
     gap: 15vw;
     font-size: 300%;
+    align-items: center;
+    justify-content: center;
+    row-gap: 5rem;
 }
 
 .page-selection-button {

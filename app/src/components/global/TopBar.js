@@ -1,11 +1,14 @@
 import React from 'react';
 
-export default function TopBar({username, logout, setPage, parentPage}) {
+export default function TopBar({username, logout, setPage, parentPage, balance}) {
   return (
     <div className="top-bar">
       <p>Hello {username} !</p>
 
       <div className="top-bar-right">
+      <div className="balance">
+          <p>Balance: {balance} TTC</p>
+      </div>
         { 
           parentPage ? 
           <div className="back" onClick={() => setPage(parentPage)}>

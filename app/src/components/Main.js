@@ -8,6 +8,7 @@ export default function Main() {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
+  const [balance, setBalance] = useState(0);
 
   const getUser = (_token) => {
     fetch('http://localhost:4859/getUser', {
@@ -25,7 +26,9 @@ export default function Main() {
           }
         })
         .then(data => {
+          console.log(data);
           setUsername(data.username);
+          setBalance(data.balance);
           setLoggedIn(true);
         })
         .catch(error => console.log(error.message));
@@ -107,13 +110,34 @@ export default function Main() {
     setLoggedIn(false);
   }
 
+  const giveMoney = () => {
+    fetch('http://localhost:4859/giveMoney', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({username: username})
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();          
+          } else {
+            console.log('Something went wrong ...');
+          }
+        })
+        .then(data => {
+          getUser();
+        })
+        .catch(error => console.log(error.message));
+      }
+
   if(!loggedIn) {
     return (
       <AuthPage register={register} registerAsGuest={registerAsGuest} login={login} />
     );
   } else {
     return (
-      <App username={username} logout={logout}/>
+      <App username={username} balance={balance} logout={logout} giveMoney={giveMoney} />
     )
   }
 

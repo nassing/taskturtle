@@ -87,14 +87,13 @@ def submitTask():
     taskDescription = request.json.get('taskDescription')
     taskLocation = request.json.get('taskLocation')
     taskReward = int(request.json.get('taskReward'))
-    print(username, taskTitle, taskDescription, taskLocation, taskReward)
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
             cur.execute("SELECT id FROM users WHERE username=?", (username,))
             try:
                 author_id = cur.fetchone()[0]
-                cur.execute("INSERT INTO tasks (author_id, taskTitle, taskDescription, taskLocation, taskReward) VALUES (?, ?, ?, ?, ?)", (author_id, taskTitle, taskDescription, taskLocation, taskReward))
+                cur.execute("INSERT INTO tasks(title, description, reward, location, author_id) VALUES (?, ?, ?, ?, ?)", (taskTitle, taskDescription, taskReward, taskLocation, author_id))
                 conn.commit()
                 return ""
             except Exception as e:

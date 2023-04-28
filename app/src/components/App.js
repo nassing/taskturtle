@@ -36,7 +36,7 @@ export default function App({username, balance, logout, giveMoney}) {
       <>
         <TopBar username={username} balance={balance} logout={logout} setPage={setPage} parentPage={PAGE.APP}/>
         <Title />
-        <AskForHelpPage />
+        <AskForHelpPage username={username}/>
       </>
     )
   } else {

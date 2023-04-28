@@ -8,9 +8,10 @@ export default function AskForHelpPage({username}) {
   const [taskReward, setTaskReward] = useState('');
 
   function handleSubmit() { 
+    console.log("entering handleSubmit");
 
     const data = {
-      username: "testusername",
+      username: username,
       taskTitle: taskTitle,
       taskDescription: taskDescription,
       taskLocation: taskLocation,
@@ -28,10 +29,7 @@ export default function AskForHelpPage({username}) {
       if (response.ok) {
         response.text().then(text => {
           if(text === "") {
-            setTaskTitle('');     
-            setTaskDescription('');
-            setTaskLocation('');
-            setTaskReward('');
+            console.log("Task submitted successfully");
           }
           else
           {
@@ -42,36 +40,6 @@ export default function AskForHelpPage({username}) {
     })
     .catch(error => console.log(error.message));
   }
-
-//   // if(username === null || videoLink === null || username === '' || videoLink === '')
-  //   // {
-  //   //   return ;
-  //   // }
-    
-  //   fetch('https://yousub-api.nassing.tk/input', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify(data)
-  //   })
-  //   .then(response => {
-  //     if (response.ok) {
-  //       response.text().then(text => {
-  //         if(text === "0") {
-  //           setUserInput('');     
-  //         }
-  //         else if(text === "1")
-  //         {
-  //           //Error
-  //         }
-  //       })
-  //     } else {
-  //       throw new Error('Error adding element');
-  //     }
-  //   })
-  //   .catch(error => console.log(error.message)); 
-  // }    
 
 
   return(
@@ -94,7 +62,7 @@ export default function AskForHelpPage({username}) {
         Reward:
         <input type="text" value={taskReward} onChange={e => setTaskReward(e.target.value)} />
       </label>
-      <input onClick={() => handleSubmit()} type="submit" value="Submit" />
+      <div onClick={() => handleSubmit()}> Submit </div>
     </form>
   </>
   )

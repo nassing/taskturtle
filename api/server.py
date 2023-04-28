@@ -86,15 +86,21 @@ def submitTask():
     taskTitle = request.json.get('taskTitle')
     taskDescription = request.json.get('taskDescription')
     taskLocation = request.json.get('taskLocation')
-    taskReward = request.json.get('taskReward')
+    taskReward = int(request.json.get('taskReward'))
+    print(username, taskTitle, taskDescription, taskLocation, taskReward)
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            cur.execute("INSERT INTO tasks (username, taskTitle, taskDescription, taskLocation, taskReward) VALUES (?, ?, ?, ?, ?)", (username, taskTitle, taskDescription, taskLocation, taskReward))
-            conn.commit()
-            return ""
-    except:
-        return "Error"
+            cur.execute("SELECT id FROM users WHERE username=?", (username,))
+            try:
+                author_id = cur.fetchone()[0]
+                cur.execute("INSERT INTO tasks (author_id, taskTitle, taskDescription, taskLocation, taskReward) VALUES (?, ?, ?, ?, ?)", (author_id, taskTitle, taskDescription, taskLocation, taskReward))
+                conn.commit()
+                return ""
+            except Exception as e:
+                return e
+    except Exception as e:
+        return e
     
 @app.route("/getTasks", methods=["GET"])
 def getTasks():

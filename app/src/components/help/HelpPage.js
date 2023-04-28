@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function HelpPage() {
 
@@ -12,20 +12,24 @@ export default function HelpPage() {
       }
     })
     .then(response => {
-      if (response.ok) {
-        return response.json;
-      }
-      else {
-        throw new Error('Something went wrong ...');
+      if(response.ok) {
+        return response.json();
+      } else {
+        console.log('Something went wrong ...');
       }
     })
     .then(data => {
-          setTaskList(data);
-        })
+      setTaskList([]);
+      for (let item of data) {
+        setTaskList(taskList => [...taskList, {title: item.title, description: item.description, user: item.user, userProfilePicture: "todo", taskImage: "todo", location: item.location, postDate: "todo", reward: item.reward, status: "uncompleted"}]);
+      }
+    })
     .catch(error => console.log(error.message));
   }
 
-  getTaskList();
+  useEffect(() => {
+    getTaskList();
+  }, []);
 
   return(
     <>

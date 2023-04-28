@@ -30,7 +30,6 @@ export default function Main() {
             register(Cookies.get('token'), true);
             getUser(Cookies.get('token'));
           }
-          console.log(data);
           setUsername(data.username);
           setBalance(data.balance);
           setLoggedIn(true);

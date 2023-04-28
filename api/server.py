@@ -103,8 +103,7 @@ def submitTask():
     
 @app.route("/getTasks", methods=["GET"])
 def getTasks():
-    tasks = getUncompletedTasks()
-    return jsonify(tasks)
+    return jsonify(getUncompletedTasks())
 
 @app.route("/guestRegister", methods=["POST"])
 def guestRegister():

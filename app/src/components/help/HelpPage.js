@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-export default function HelpPage() {
+export default function HelpPage({username, getUser}) {
 
-  const [taskList, setTaskList] = useState([{title: "title", description: "description", user: "user", userProfilePicture: "linkToPicture", taskImage: "linkToImage", location: "location", postDate: "date", reward: "reward", status: "status"}, {title: "title", description: "description", user: "user", userProfilePicture: "linkToPicture", taskImage: "linkToImage", location: "location", postDate: "date", reward: "reward", status: "status"}]);
+  const [taskList, setTaskList] = useState([]);
+  //userProfilePicture, taskImage, postDate, status
 
   const getTaskList = () => {
     fetch('http://localhost:4859/getTasks', {
@@ -21,11 +22,36 @@ export default function HelpPage() {
     .then(data => {
       setTaskList([]);
       for (let item of data) {
-        setTaskList(taskList => [...taskList, {title: item.title, description: item.description, user: item.user, userProfilePicture: "todo", taskImage: "todo", location: item.location, postDate: "todo", reward: item.reward, status: "uncompleted"}]);
+        setTaskList(taskList => [...taskList, {id: item.id, title: item.title, description: item.description, user: item.user, userProfilePicture: "todo", taskImage: "todo", location: item.location, postDate: "todo", reward: item.reward, status: "uncompleted"}]);
       }
     })
     .catch(error => console.log(error.message));
   }
+
+  const completeTask = (id) => {
+    fetch('http://localhost:4859/completeTask', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({task_id: id, helper_username: username})
+    })
+    .then(response => {
+      if(response.ok) {
+        response.text().then(text => {
+          if(text === "") {
+          getTaskList();
+          getUser();
+        } else {
+          console.log(response.text());
+        }})
+      } else {
+        console.log('Something went wrong ...');
+      }
+    })
+    .catch(error => console.log(error.message));
+  }
+
 
   useEffect(() => {
     getTaskList();
@@ -43,6 +69,10 @@ export default function HelpPage() {
 
             <div className="task-title">
               <h1>{task.title}</h1>
+            </div>
+
+            <div className="task-help-button" onClick={() => completeTask(task.id)}>
+              <p>Help him</p>
             </div>
             
             <div className="task-description">

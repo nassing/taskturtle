@@ -141,7 +141,7 @@ export default function Main() {
     );
   } else {
     return (
-      <App username={username} balance={balance} logout={logout} giveMoney={giveMoney} />
+      <App username={username} balance={balance} logout={logout} giveMoney={giveMoney} getUser={getUser} />
     )
   }
 

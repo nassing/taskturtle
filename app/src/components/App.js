@@ -8,7 +8,7 @@ import TopBar from './global/TopBar';
 
 import {PAGE} from './global/Enums';
 
-export default function App({username, balance, logout, giveMoney}) {
+export default function App({username, balance, logout, giveMoney, getUser}) {
 
   const [currentPage, setCurrentPage] = useState(PAGE.APP);
 
@@ -28,7 +28,7 @@ export default function App({username, balance, logout, giveMoney}) {
       <>
         <TopBar username={username} balance={balance} logout={logout} setPage={setPage} parentPage={PAGE.APP} />
         <Title />
-        <HelpPage />
+        <HelpPage username={username} getUser={getUser}/>
       </>
     )
   } else if(currentPage === PAGE.ASKFORHELP) {

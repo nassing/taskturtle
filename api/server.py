@@ -146,6 +146,13 @@ def giveMoney():
             return jsonify({"balance" : balance})
     except Exception as e:
         return jsonify({"error" : "giveMoney, " + str(e)})
+    
+@app.route("/completeTask", methods=["POST"])
+def completeTask():
+    task_id = request.json.get('task_id')
+    helper_username = request.json.get('helper_username')
+    completeTaskDB(task_id, helper_username)
+    return ""
 
 
 if __name__ == "__main__":

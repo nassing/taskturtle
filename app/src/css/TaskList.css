@@ -20,7 +20,22 @@
 }
 
 .task-title {
-    grid-area: 1 / 2 / 2 / 5;
+    grid-area: 1 / 2 / 2 / 4;
+}
+
+.task-help-button {
+    grid-area: 1 / 4 / 2 / 5;
+    border-radius: 1rem;
+    border: 0.2rem solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+    cursor: pointer;
+}
+
+.task-help-button:hover {
+    background-color:rgba(0, 0, 0, 0.171)
 }
 
 .task-description {

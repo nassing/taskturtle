@@ -5,3 +5,9 @@ export const PAGE = {
     HELP: 'HELP',
     ASKFORHELP: 'ASKFORHELP',
   };
+
+export const TRANSACTIONSTATE = {
+  PENDING: 'PENDING',
+  COMPLETE: 'COMPLETE',
+  CANCELLED: 'CANCELLED',
+};

@@ -1,3 +1,5 @@
+//Page pour demander de l'aide
+
 import React, {useState} from 'react';
 
 export default function AskForHelpPage({username}) {

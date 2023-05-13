@@ -1,3 +1,5 @@
+// Composant pour afficher le nom de l'appli
+
 import React from 'react';
 
 import logo from '../../images/logo.png';

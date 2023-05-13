@@ -1,3 +1,5 @@
+//Composant pour la navbar, classique
+
 import React from 'react';
 
 export default function TopBar({username, logout, setPage, parentPage, balance}) {

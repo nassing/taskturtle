@@ -1,3 +1,5 @@
+// Composant principal qui render la page en fonction de la variable PAGE.
+
 import React, {useState} from 'react';
 
 import Title from './global/Title';

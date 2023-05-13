@@ -1,3 +1,5 @@
+// Composant modifie la variable PAGE pour choisir la page sur laquelle on veut aller
+
 import React from 'react';
 
 import { PAGE } from './Enums';

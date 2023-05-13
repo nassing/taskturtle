@@ -1,3 +1,5 @@
+// Composant pour se connecter avec Auth0 ou en tant qu'invité (seul l'invité marche pour l'instant)
+
 import React, { useState } from 'react';
 
 import Title from '../global/Title';

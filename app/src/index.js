@@ -1,3 +1,5 @@
+// C'est ici qu'on import tous les fichiers css
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';

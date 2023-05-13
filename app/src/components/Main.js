@@ -1,3 +1,5 @@
+//Contient la plupart des variables et des fonctions. Affiche la page d'authentification si on n'est pas connecté et App sinon
+
 import React, {useState} from 'react';
 
 import App from './App';
@@ -144,9 +146,5 @@ export default function Main() {
       <App username={username} balance={balance} logout={logout} giveMoney={giveMoney} getUser={getUser} />
     )
   }
-
-  // return (
-  //   <App username={username} logout={logout} />
-  // );
   
 }

@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://github.com/trufflesuite/ganache-ui/releases
+HostUrl=https://objects.githubusercontent.com/github-production-release-asset-2e65be/79269625/23859443-25fe-46e0-9da2-ec0bfa020718?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230511%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230511T215613Z&X-Amz-Expires=300&X-Amz-Signature=cc37f4bd3a50c52bc05b9c085d1adf13e51fd9773cb7bec79f70af26a960724c&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=79269625&response-content-disposition=attachment%3B%20filename%3Dganache-2.7.1-linux-x86_64.AppImage&response-content-type=application%2Foctet-stream

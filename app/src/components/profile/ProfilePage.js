@@ -96,7 +96,7 @@ export default function ProfilePage({username}) {
             New Photo Link:
             <input type="text" value={newLink} onChange={e => setNewLink(e.target.value)} />
           </label>
-          <input type="submit" value="Submit" />
+          <input className="input-submit" type="submit" value="Submit" />
         </form>
 
       </div>

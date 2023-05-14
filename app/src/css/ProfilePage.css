@@ -52,3 +52,7 @@
     height: 100%;
     width: 100%;
 }
+
+.input-submit{
+    cursor: pointer;
+}

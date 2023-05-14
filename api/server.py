@@ -154,6 +154,41 @@ def completeTask():
     completeTaskDB(task_id, helper_username)
     return ""
 
+@app.route("/getTransactionData", methods=["POST"])
+def getTransactionData():
+    transactionID = request.json.get('transactionID')
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM transactions WHERE id=?", (transactionID,))
+            try:
+                transaction = cur.fetchone()
+                return jsonify({senderUsername : transaction[1], receiverUsername : transaction[2], senderPictureLink : transaction[3], receiverPictureLink : transaction[4], transactionState: transaction[5], transactionPrice: transaction[6], serviceTitle: transaction[7] })
+            except:
+                return jsonify({"error" : "Transaction not found"})
+    except Exception as e:
+        return jsonify({"error" : "getTransactionData, " + str(e)})
+
+
+@app.route("/tryTransaction", methods=["POST"])
+def tryTransaction():
+    transactionID = request.json.get('transactionID')
+    userToken = request.json.get('userToken')
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM transactions WHERE id=?", (transactionID,))
+            try:
+                transaction = cur.fetchone()
+                if transaction[2] == userToken:
+                    return jsonify({"transaction" : transaction})
+                else:
+                    return jsonify({"error" : "Transaction not found"})
+            except:
+                return jsonify({"error" : "Transaction not found"})
+    except Exception as e:
+        return jsonify({"error" : "tryTransaction, " + str(e)})
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=env.get("PORT", 4859))

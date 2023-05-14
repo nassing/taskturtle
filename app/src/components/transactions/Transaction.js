@@ -33,7 +33,7 @@ export default function Transaction({userToken, transactionID}) {
         setSenderPictureLink(data.senderPictureLink);
         setReceiverPictureLink(data.receiverPictureLink);
         setTransactionState(data.transactionState);
-        setTransactionState(data.transactionPrice);
+        setTransactionPrice(data.transactionPrice);
         setServiceTitle(data.serviceTitle);
       })
       .catch(error => console.log(error.message));

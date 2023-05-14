@@ -13,6 +13,7 @@ import './css/TopBar.css';
 import './css/PageSelection.css';
 import './css/TaskList.css';
 import './css/AskForHelp.css';
+import './css/ProfilePage.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

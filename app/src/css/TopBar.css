@@ -2,8 +2,13 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    margin-top: 2rem;
+    margin-top: 0.5rem;
     margin-bottom: 2rem;
+    padding-bottom: 1.2vh;
+    padding-right: 5vw;
+    padding-left: 5vw;
+    border-bottom: 0.5vh solid;
+    font-size: 1.35em;
 }
 
 .top-bar-right {

@@ -4,6 +4,7 @@ export const PAGE = {
     APP: 'APP',
     HELP: 'HELP',
     ASKFORHELP: 'ASKFORHELP',
+    PROFILE : 'PROFILE',
   };
 
 export const TRANSACTIONSTATE = {

@@ -101,6 +101,21 @@ def submitTask():
     except Exception as e:
         return e
     
+
+@app.route("/getProfile", methods=["POST"])
+def getProfile():
+    username = request.json.get('username')
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT link_to_profile,balance FROM users WHERE username=?", (username,))
+            req = cur.fetchone()[0]
+            data = {"link": req[0],"balance": req[1]}
+            return jsonify(data)
+            
+    except Exception as e:
+        return e    
+    
 @app.route("/getTasks", methods=["GET"])
 def getTasks():
     return jsonify(getUncompletedTasks())

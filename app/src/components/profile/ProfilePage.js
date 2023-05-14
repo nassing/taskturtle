@@ -8,12 +8,18 @@ export default function ProfilePage({username}) {
   const [photoLink, setPhotoLink] = useState('');
   const [balance, setBalance] = useState(0);
   const [newLink,setNewLink] = useState('');
+  const [imageExists, setImageExists] = useState(true);
   
   useEffect( () => {handleUpdate()}, []);
+  useEffect( () => {setImageExists(true)},[photoLink])
+
+  function handleImageError() {
+    setImageExists(false);
+  }
 
   function handleUpdate() { 
-    console.log("entering handleUpdate - ProfilePage");
-
+    //console.log("entering handleUpdate - ProfilePage");
+   
     const data = {
       username: username,
     };
@@ -37,6 +43,7 @@ export default function ProfilePage({username}) {
           setPhotoLink(data.link);
           setBalance(data.balance);
           setNewLink('');
+          setImageExists(true);
         }
         else {
           setPhotoLink('');
@@ -49,11 +56,13 @@ export default function ProfilePage({username}) {
 
   const handleSubmitProfile = async (e) => {
     e.preventDefault();
+    setPhotoLink(newLink);
+    
     const data = {
       username: username,
       link : newLink,
     };
-
+    setNewLink('');
     fetch('http://localhost:4859/submitNewLink', {
       method: 'POST',
       headers: {
@@ -75,7 +84,6 @@ export default function ProfilePage({username}) {
       }
     })
     .catch(error => console.log(error.message));
-    handleUpdate();
   }
   
   //useEffect( () => {console.log(newLink)}, [newLink]);
@@ -88,7 +96,12 @@ export default function ProfilePage({username}) {
         <h1 className='profile-title profile-elt' >Profile</h1>
 
         <div className='profile-img-frame profile-elt'>
-          <img className='profile-img' src={photoLink===''? defaultImage : photoLink} ></img>
+          {imageExists ? (
+            <img className='profile-img' src={photoLink} onError={handleImageError} />
+            ) : (
+              <img className='profile-img' src={defaultImage} />
+           )}
+
         </div>
 
         <form className="help-form" onSubmit={handleSubmitProfile}>

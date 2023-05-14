@@ -1,3 +1,3 @@
-`./api` pour lancer l'API
+`./start-api` pour lancer l'API
 
-`./app` pour lancer le front-end
+`./start-app` pour lancer le front-end

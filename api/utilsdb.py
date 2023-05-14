@@ -85,3 +85,9 @@ def addUserBalance(username, amount):
         cursor = conn.cursor()
         cursor.execute('UPDATE users SET balance = balance + ? WHERE username = ?', (amount, username))
         conn.commit()
+
+def addUserLink(username,link) :
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('UPDATE users SET link_to_profile_picture = ? WHERE username = ?', (link, username))
+        conn.commit()

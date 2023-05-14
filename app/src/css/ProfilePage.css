@@ -1,0 +1,54 @@
+.profile-frame{
+    
+        width: 50vw;
+        height:100%;
+        max-height: 94vh;
+        max-width: 100vw;
+        flex-direction: column;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        opacity:1;
+        border-radius: 2vw;
+        border : 0.2vw solid;
+        padding: 0.3vh;
+        margin-top: 3vh;
+    
+}
+
+.profile-elt{
+    margin:1vh
+}
+
+
+
+.profile-title-frame {
+    flex-direction: row;
+    justify-content: center;
+    display: flex;
+    align-items:center;
+    height:100%;
+    width: 100%;
+    max-height: 20vh;
+
+}
+
+.profile-title{
+    font-size: 2em;
+}
+
+.profile-img-frame{
+    height: 15vh;
+    width: 15vh;
+    border: 0.2vw solid;
+    border-radius: 7.5vh;
+    overflow: hidden;
+    border-color: rgb(86, 145, 100);
+}
+
+.profile-img{
+    object-fit: fill;
+    height: 100%;
+    width: 100%;
+}

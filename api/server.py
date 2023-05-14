@@ -108,13 +108,26 @@ def getProfile():
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            cur.execute("SELECT link_to_profile,balance FROM users WHERE username=?", (username,))
-            req = cur.fetchone()[0]
+            req = cur.execute("SELECT link_to_profile_picture,balance FROM users WHERE username = ?", (username,))
+            req = req.fetchone()
             data = {"link": req[0],"balance": req[1]}
+            if(data['link'] == None) :
+                data['link'] = ''
             return jsonify(data)
             
     except Exception as e:
-        return e    
+        print(e)
+        return jsonify({"error" : "getProfile, " + str(e)})  
+  
+@app.route("/submitNewLink", methods=["POST"])
+def submitNewLink():
+    username = request.json.get('username')
+    link = request.json.get('link')
+    try:
+        addUserLink(username=username,link=link)
+        return jsonify({"sucess" : True})
+    except Exception as e:
+        return jsonify({"error" : "submitNewLink, " + str(e)})
     
 @app.route("/getTasks", methods=["GET"])
 def getTasks():

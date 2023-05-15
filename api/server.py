@@ -136,6 +136,17 @@ def submitNewLink():
     except Exception as e:
         return jsonify({"error" : "submitNewLink, " + str(e)})
     
+@app.route("/submitNewAddr", methods=["POST"])
+def submitNewAddr():
+    username = request.json.get('username')
+    address = request.json.get('address')
+    try:
+        addUserAddr(username=username,address=address)
+        return jsonify({"sucess" : True})
+    except Exception as e:
+        return jsonify({"error" : "submitNewAddr, " + str(e)})
+    
+    
 @app.route("/getTasks", methods=["GET"])
 def getTasks():
     return jsonify(getUncompletedTasks())

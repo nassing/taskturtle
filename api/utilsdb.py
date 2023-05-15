@@ -97,3 +97,10 @@ def addUserLink(username,link) :
         cursor = conn.cursor()
         cursor.execute('UPDATE users SET link_to_profile_picture = ? WHERE username = ?', (link, username))
         conn.commit()
+
+
+def addUserAddr(username,address) :
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('UPDATE users SET address = ? WHERE username = ?', (address, username))
+        conn.commit()

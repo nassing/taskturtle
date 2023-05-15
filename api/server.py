@@ -207,27 +207,24 @@ def completeTask():
 
 @app.route("/getTransactionData", methods=["POST"])
 def getTransactionData():
-    taskID = request.json.get('taskID')
+    transactionID = request.json.get('transactionID')
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            cur.execute("SELECT transaction_id FROM tasks WHERE id=?", (taskID,))
-            try:
-                transaction_id = cur.fetchone()
-                cur.execute("SELECT sender_id, receiver_id, state, price, task_id FROM transactions WHERE id=?", (transaction_id,))
-                transaction = cur.fetchone()
-                sender_id = transaction[0]
-                cur.execute("SELECT username, link_to_profile_picture FROM users WHERE id=?", (sender_id,))
-                senderUsername, senderPictureLink = cur.fetchone()
-                receiver_id = transaction[1]
+            cur.execute("SELECT sender_id, receiver_id, state, price FROM transactions WHERE id=?", (transactionID,))
+            transaction = cur.fetchone()
+            sender_id = transaction[0]
+            cur.execute("SELECT username, link_to_profile_picture FROM users WHERE id=?", (sender_id,))
+            senderUsername, senderPictureLink = cur.fetchone()
+            receiver_id = transaction[1]
+            if receiver_id == None:
+                receiverUsername, receiverPictureLink = None, None
+            else:
                 cur.execute("SELECT username, link_to_profile_picture FROM users WHERE id=?", (receiver_id,))
                 receiverUsername, receiverPictureLink = cur.fetchone()
-                task_id = transaction[4]
-                cur.execute("SELECT title FROM tasks WHERE id=?", (task_id,))
-                taskTitle = cur.fetchone()[0]
-                return jsonify({"senderUsername" : senderUsername, "receiverUsername" : receiverUsername, "senderPictureLink" : senderPictureLink, "receiverPictureLink" : receiverPictureLink, "transactionState": transaction[2], "transactionPrice": transaction[3], "taskTitle": taskTitle })
-            except:
-                return jsonify({"error" : "Transaction not found"})
+            cur.execute("SELECT title FROM tasks WHERE transaction_id=?", (transactionID,))
+            taskTitle = cur.fetchone()[0]
+            return jsonify({"senderUsername" : senderUsername, "receiverUsername" : receiverUsername, "senderPictureLink" : senderPictureLink, "receiverPictureLink" : receiverPictureLink, "transactionState": transaction[2], "transactionPrice": transaction[3], "taskTitle": taskTitle })
     except Exception as e:
         return jsonify({"error" : "getTransactionData, " + str(e)})
 

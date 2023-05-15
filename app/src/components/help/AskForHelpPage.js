@@ -5,6 +5,14 @@ export default function AskForHelpPage({ username }) {
   const [taskDescription, setTaskDescription] = useState('');
   const [taskLocation, setTaskLocation] = useState('');
   const [taskReward, setTaskReward] = useState('');
+  const [submittedText, setSubmittedText] = useState(false);
+
+  function displaySubmittedText() {
+    setSubmittedText(true);
+    setTimeout(() => {
+      setSubmittedText(false);
+    }, 2000);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -29,7 +37,11 @@ export default function AskForHelpPage({ username }) {
         if (response.ok) {
           response.text().then((text) => {
             if (text === '') {
-              console.log('Task submitted successfully');
+              displaySubmittedText();
+              setTaskTitle('');
+              setTaskDescription('');
+              setTaskLocation('');
+              setTaskReward('');
             } else {
               console.log(text);
             }
@@ -61,6 +73,7 @@ export default function AskForHelpPage({ username }) {
         </label>
         <button type="submit">Submit</button>
       </form>
+      { submittedText ? <p>Task submitted successfully</p> : null}
     </>
   );
 }

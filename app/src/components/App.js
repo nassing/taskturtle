@@ -53,10 +53,10 @@ export default function App({username, balance, logout, giveMoney, getUser}) {
         <ProfilePage username={username}/>
       </>
     )
-  } else if(currentPage === PAGE.TRANSACTIONS) {
+  } else if(currentPage === PAGE.TRANSACTION) {
     return(
       <>
-        <TopBar username={username} balance={balance} logout={logout} setPage={setPage} parentPage={PAGE.APP}  currPage = {PAGE.TRANSACTIONS}/>
+        <TopBar username={username} balance={balance} logout={logout} setPage={setPage} parentPage={PAGE.APP}  currPage = {PAGE.TRANSACTION}/>
         <Title />
         <Transaction username={username} transactionID={transactionID}/>
       </>

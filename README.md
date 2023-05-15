@@ -8,31 +8,26 @@ Il faut ensuite écrire la commande :  `migrate --network developmment` une fois
 `./start-app` pour lancer le front-end
 
 
-Il est possible que vous rencontriez des problèmes au lancement de la blockchaine locale : nous en avons aussi.
-Puisque capricieuse, nous n'avons pas réellement pu tester la v2 de notre application, ainsi que nos contrats solidity.
-Sachez néanmoins que les contrats sont écrits, et devraient à priori fonctionner si mit en lien avec l'application react.
-En effet, la gestion de la connection à la blochchaine a été entièrement intégrée à notre application, avec l'ensemble des transactions qui y est stockée.
+Il est possible que vous rencontriez des problèmes lors du lancement de la blockchain locale : nous en avons également fait l'expérience.
 
-Cela pose un petit problème, puisque les transactions (et appels aux fonctions de contrats) ne dépendent plus de notre backend, 
-mais de la blockchain, on peine à pouvoir utiliser les fonctionnalités de base du site (compris dans la v1). Ceci dit, tout a été implémenté 
-dans un premier temps pour fonctionner avec le backend, puis dans un second temps (version actuelle) pour faire des appels à la blockchain.
+Étant donné sa nature capricieuse, nous n'avons pas réellement pu tester la version 2 de notre application ni nos contrats Solidity. Néanmoins, les contrats sont écrits et devraient a priori fonctionner s'ils sont liés à l'application React.
 
-Ainsi, dans sa version, le site n'est pas totallement fonctionnel, mais il reste encore l'ensemble du code dans le backend (et les anciens commits) pour prouver que la V1 était bien implémentée.
-Enfin, les contrats que l'on utilise actuellement pour faire tourner la pseudo v2 se trouvent dans le dossier network, tandis que les contrats théoriques pour la v3 ont déjà été codés et se trouvent à la racine du projet
+En effet, la gestion de la connexion à la blockchain a été entièrement intégrée à notre application, avec l'ensemble des transactions qui y sont stockées.
 
+Cela pose un petit problème, car les transactions (et appels aux fonctions des contrats) ne dépendent plus de notre backend, mais de la blockchain. Nous avons du mal à utiliser les fonctionnalités de base du site qui étaient incluses dans la version 1. Cependant, tout a d'abord été implémenté pour fonctionner avec le backend, puis dans la version actuelle pour effectuer des appels à la blockchain.
 
-Problèmes liés à la blockchaine qui nous empêche de mettre en place toute la v2 :
-    - Impossible d'ajouter des users à la blockchaine sans passer par le terminal truffle (et donc impossible depuis la webapp)
-    - Des transactions qui échouent faute de gas (on a pas réussi à en ajouter depuis l'app à nos utilisateurs, ce qui nous empêchent d'utiliser certaines transactions de nos contrats, et donc de les tester pour fix d'éventuels bugs)
-    - Truffle capricieux qui refuse de se lancer, de manière aléatoire, une fois sur 2. Or la blochaine est réinitialisée à chaque démarrage -> impossible d'avoir des données de tests consistantes
+Ainsi, dans cette version, le site n'est pas totalement fonctionnel, mais le code backend (et les anciens commits) prouvent que la version 1 était bien implémentée. De plus, les contrats utilisés actuellement pour faire fonctionner la pseudo version 2 se trouvent dans le dossier "network", tandis que les contrats théoriques pour la version 3 ont déjà été codés et se trouvent à la racine du projet (notamment le fichier "contrat.sol").
 
-Fonctionnalités de la v2 qui fonctionnent  (contrat taskTurtle):
-    - Stockage des tasks sur la blockchaine :
-        On est capabable de les récupérer depuis la blockchaine;
-        On est capabable d'en ajouter (AskForHelp);
-        On peut finaliser une tâche préalablement acceptée via son profile
+Nous rencontrons des problèmes liés à la blockchain qui nous empêchent de mettre en place toute la version 2 :
 
-Fonctionnalités de la v2 qui ne fonctionnent pas :
-    - Accepter une task depuis la page Help
-     (error Pas assez de gas /// Transaction reverted 'withoutReasonError') 
-     --> Bloque toute l'application ducoup...
+    Il est impossible d'ajouter des utilisateurs à la blockchain sans passer par le terminal Truffle (et donc impossible depuis l'application web).
+    Certaines transactions échouent en raison du manque de gas. Nous n'avons pas réussi à en ajouter depuis l'application à nos utilisateurs, ce qui nous empêche d'utiliser certaines transactions de nos contrats et donc de les tester pour corriger d'éventuels bugs.
+    Truffle est capricieux et refuse de se lancer de manière aléatoire, une fois sur deux. Or, la blockchain est réinitialisée à chaque démarrage, ce qui rend impossible d'avoir des données de test cohérentes.
+
+Les fonctionnalités de la version 2 qui fonctionnent (contrat "TaskTurtle") :
+
+    Stockage des tâches sur la blockchain : nous pouvons les récupérer depuis la blockchain, en ajouter de nouvelles (AskForHelp) et finaliser une tâche préalablement acceptée via le profil.
+
+Les fonctionnalités de la version 2 qui ne fonctionnent pas :
+
+    Accepter une tâche depuis la page "Help" entraîne une erreur "Pas assez de gas" ou une transaction revertée sans raison. Cela bloque toute l'application en conséquence

@@ -3,4 +3,5 @@
 cd app
 npm install
 npm install web3 
+npm install ethers
 npm run start -- port=2741

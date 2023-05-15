@@ -1,5 +1,6 @@
 import sqlite3
 import secrets
+from eth_keys import keys
 
 def getAllUsers():
     with sqlite3.connect('database.db') as conn:
@@ -67,11 +68,11 @@ def addGuestUser(guest_token):
     with sqlite3.connect('database.db') as conn:
         
         private_key = secrets.token_hex(32)  # Generate a random 32-byte private key
-        address = private_key[64-40:]  # Take the last 40 characters as the address
-    
-
+        private_key_bytes = bytes.fromhex(private_key)
+        public_key = keys.PrivateKey(private_key_bytes).public_key
+        address = public_key.to_checksum_address()
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO users (username, guest_token, address,p_keys) VALUES (?,?,?,?)', ("user" + guest_token, guest_token,'0x'+address,private_key))
+        cursor.execute('INSERT INTO users (username, guest_token, address,p_keys) VALUES (?,?,?,?)', ("user" + guest_token, guest_token,address,private_key))
         conn.commit()
 
 
@@ -103,6 +104,9 @@ def addUserLink(username,link) :
 def addUserKeys(username,p_keys) :
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
-        address = p_keys[64-40:]  # Take the last 40 characters as the address
-        cursor.execute('UPDATE users SET p_keys = ?,address = ? WHERE username = ?', (p_keys,'0x'+address, username))
+        private_key_bytes = bytes.fromhex(p_keys)
+        public_key = keys.PrivateKey(private_key_bytes).public_key
+        address = public_key.to_checksum_address()
+        print(address)
+        cursor.execute('UPDATE users SET p_keys = ?,address = ? WHERE username = ?', (p_keys,address, username))
         conn.commit()

@@ -5,8 +5,29 @@ import React, {useState} from 'react';
 import App from './App';
 import AuthPage from './auth/AuthPage';
 import Cookies from 'js-cookie';
+import Web3 from 'web3';
 
 export default function Main() {
+
+
+  const web3 = new Web3('http://localhost:9545');
+
+  let accounts;
+
+  const fetchAccounts = async () => {
+    try {
+      accounts = await web3.eth.getAccounts();
+      console.log('Accounts:', accounts);
+      // Use the 'accounts' variable for further processing
+    } catch (error) {
+      console.error('Error getting accounts:', error);
+    }
+  };
+  
+  // Call the fetchAccounts function
+  fetchAccounts();
+
+  let account_count = 0;
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
@@ -57,13 +78,18 @@ export default function Main() {
 
   const register = (_token, _isGuest) => {
     if(_isGuest)
-    {
+    { //console.log(accounts);
+      const account_addr = accounts[account_count];
+      account_count +=1;
+      if (account_count>= accounts.length) {
+        account_count =0;
+      }
       fetch('http://localhost:4859/guestRegister', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({token: _token})
+        body: JSON.stringify({token: _token, address: account_addr})
       })
       .then(response => {
         if (response.ok) {

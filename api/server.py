@@ -16,6 +16,7 @@ import sqlite3
 from utilsdb import *
 import os
 from initdb import init_db
+from eth_keys import keys
 
 # Check if the database file exists, else creates it
 if not os.path.exists("database.db"):
@@ -158,12 +159,14 @@ def getTasks():
 def guestRegister():
     token = request.json.get('token')
     username = "guest" + token
+    address = request.json.get('address')
+    print(address)
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
             private_key = secrets.token_hex(32)  # Generate a random 32-byte private key
-            address = private_key[64-40:]  # Take the last 40 characters as the address
-            cur.execute("INSERT INTO users (username, guest_token,address,p_keys) VALUES (?, ?, ?, ?)", (username, token,'0x'+ address,private_key))
+            private_key_bytes = bytes.fromhex(private_key)
+            cur.execute("INSERT INTO users (username, guest_token,address,p_keys) VALUES (?, ?, ?, ?)", (username, token,address,private_key))
             conn.commit()
             return ""
     except Exception as e:

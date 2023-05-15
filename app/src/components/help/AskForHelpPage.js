@@ -17,12 +17,13 @@ export default function AskForHelpPage({ username }) {
 
   const submitTask = async (e) => {
     e.preventDefault();
-    
+    const accounts = await web3.eth.getAccounts();
+    console.log('Available Addresses:', accounts);
     try {
       const reward = parseInt(taskReward);
       if(balance >= reward) {
-        const gas = await taskContract.methods.createTask(reward,taskDescription).estimateGas({ from: userAdr });
-        const result = await taskContract.methods.createTask(reward,taskDescription).send({ from: userAdr, gas });
+        const gas = await taskContract.methods.createTask(reward,taskDescription).estimateGas({ from: userAdr.slice(-40) });
+        const result = await taskContract.methods.createTask(reward,taskDescription).send({ from: userAdr.slice(-40), gas });
         console.log('Task created:', result);
       }
       else {
@@ -93,16 +94,8 @@ export default function AskForHelpPage({ username }) {
             setBalance(data.balance);
             setUserAdr(data.address);
             setUserPKeys(data.p_keys);
-            web3.eth.accounts.wallet.add(data.p_keys);
-            const account = web3.eth.accounts.wallet.add(data.p_keys);
-
-          if (account !== null) {
-            // Account was successfully unlocked
-            console.log('Account unlocked:', account.address);
-          } else {
-            // Failed to unlock the account
-            console.log('Failed to unlock account');
-          }
+            // web3.eth.accounts.wallet.add(data.p_keys);
+            // const account = web3.eth.accounts.wallet.add(data.p_keys);
         })
         .catch(error => console.log(error.message));
         

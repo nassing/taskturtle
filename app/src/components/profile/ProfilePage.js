@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import defaultImage from './bear.jpg';
 import Web3 from 'web3';
 import TaskTurtle from '../../contracts/TaskTurtle.abi.json';
+import { ethers } from "ethers";
 
 
 export default function ProfilePage({username}) {
@@ -102,31 +103,24 @@ export default function ProfilePage({username}) {
           setImageExists(true);
           setUserAdr(data.address);
           setUserPKeys(data.p_keys);
-          web3.eth.accounts.wallet.add(data.p_keys);
-          const account = web3.eth.accounts.wallet.add(data.p_keys);
+          // web3.eth.accounts.wallet.add(data.p_keys);
+          // const account = web3.eth.accounts.wallet.add(data.p_keys);
 
-          if (account !== null) {
-            // Account was successfully unlocked
-            console.log('Account unlocked:', account.address);
-          } else {
-            // Failed to unlock the account
-            console.log('Failed to unlock account');
-          }
+          // if (account !== null) {
+          //   // Account was successfully unlocked
+          //   console.log('Account unlocked:', account.address);
+          //   console.log('Account address: '+ data.address);
+          // } else {
+          //   // Failed to unlock the account
+          //   console.log('Failed to unlock account');
+          // }
         }
         else {
           setPhotoLink('');
           setBalance(0);
           setUserAdr(data.address);
           setUserPKeys(data.p_keys);
-          const account = web3.eth.accounts.wallet.add(data.p_keys);
-
-          if (account !== null) {
-            // Account was successfully unlocked
-            console.log('Account unlocked:', account.address);
-          } else {
-            // Failed to unlock the account
-            console.log('Failed to unlock account');
-}
+          //const account = web3.eth.accounts.wallet.add(data.p_keys);
         }
       })
       .catch(error => console.log(error.message));
@@ -174,7 +168,9 @@ export default function ProfilePage({username}) {
       console.log("Invalid keys format. Good format is Ox... followed by a 64-long hex.");
       return;
     }
-    setUserAdr('0x'+newKeys.slice(-40));
+    const wallet = new ethers.Wallet(newKeys.slice(-64));
+    const address = wallet.address;
+    setUserAdr(address);
     const data = {
       username: username,
       p_keys : newKeys,
@@ -264,13 +260,7 @@ export default function ProfilePage({username}) {
       
       <div className='profile-elt' > Here is your balance : {balance} </div>
       <div className='profile-elt' > Here is your address : {userAdr} </div>
-      <form className="help-form profile-elt" onSubmit={handleSubmitKeys}>
-          <label>
-            Modify your private keys (Ox...):
-            <input type="text" value={newKeys} onChange={e => setNewKeys(e.target.value)} />
-          </label>
-          <input className="input-submit profile-button" type="submit" value="Submit" />
-        </form>
+      
     </div>
     <div className='profile-title profile-elt profile-margin-top'> My Tasks </div>         
     
@@ -290,7 +280,7 @@ export default function ProfilePage({username}) {
                   {task.accepted?<div className='profile-task-elt'> Accepted by: {task.performer} </div>:null}
                   <div className='profile-task-elt'> Price : {task.price} </div>
                   <div className='profile-task-elt'> {task.desc} </div>
-                  <button className='profile-task-elt profile-task-button' onClick={() => completeAcceptedTask(task.id,userAdr,task.price)}>  Finish Task </button>
+                  <button className='profile-task-elt profile-task-button' onClick={() => completeAcceptedTask(task.id,userAdr.slice(-40),task.price)}>  Finish Task </button>
                 </div>
               </div>
             ))}
@@ -319,3 +309,11 @@ export default function ProfilePage({username}) {
   
   )
 }
+
+// <form className="help-form profile-elt" onSubmit={handleSubmitKeys}>
+//           <label>
+//             Modify your private keys (Ox...):
+//             <input type="text" value={newKeys} onChange={e => setNewKeys(e.target.value)} />
+//           </label>
+//           <input className="input-submit profile-button" type="submit" value="Submit" />
+//         </form>

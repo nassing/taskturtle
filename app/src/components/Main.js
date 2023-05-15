@@ -17,7 +17,7 @@ export default function Main() {
   const fetchAccounts = async () => {
     try {
       accounts = await web3.eth.getAccounts();
-      console.log('Accounts:', accounts);
+      //console.log('Accounts:', accounts);
       // Use the 'accounts' variable for further processing
     } catch (error) {
       console.error('Error getting accounts:', error);

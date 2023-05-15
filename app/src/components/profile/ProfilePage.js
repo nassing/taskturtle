@@ -204,17 +204,22 @@ export default function ProfilePage({username}) {
 
   async function getTaskLists() {
     if (taskContract) {
-      const result = await taskContract.methods.getTasks().call();
+      const taskData = await taskContract.methods.getTasks().call();
       setAcceptedTasks([]);
       setOngoingTasks([]);
-      for(let item of result) {
-        if(item.requester === userAdr && !(item.completed)) {
-          setOngoingTasks(ongoinsTasks => [...ongoinsTasks, {id: item.id, requester: item.requester, desc: item.desc, performer: item.performer,  price: item.price, completed : item.completed, accepted: item.accepted}]);
+      
+       
+        taskData.forEach((item) => {
+          
+        //console.log(item);
+        if(item[1] === userAdr && !(item[4])) {
+          setOngoingTasks(ongoinsTasks => [...ongoinsTasks, {id: item[0], requester: item[1], desc: item[5], performer: item[2],  price: item[3], completed : item[4], accepted: item[6]}]);
         }
-        else if (item.performer === userAdr && !(item.completed)) {
-          setAcceptedTasks(acceptedTasks => [...acceptedTasks, {id: item.id, requester: item.requester, desc: item.desc, performer: item.performer,  price: item.price, completed : item.completed, accepted: item.accepted}]);
+        else if (item[2] === userAdr && !(item[4])) {
+          setAcceptedTasks(acceptedTasks => [...acceptedTasks, {id: item[0], requester: item[1], desc: item[5], performer: item[2],  price: item[3], completed : item[4], accepted: item[6]}]);
         }
-      }
+
+      });
       
     } else {
       console.log('Task contract is not initialized yet.');

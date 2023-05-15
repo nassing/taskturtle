@@ -7,29 +7,18 @@ export default function AskForHelpPage({ username }) {
   const [taskDescription, setTaskDescription] = useState('');
   const [taskLocation, setTaskLocation] = useState('');
   const [taskReward, setTaskReward] = useState('');
-<<<<<<< HEAD
   const [contractAddresses, setContractAddresses] = useState([]);
   const [userPKeys, setUserPKeys] = useState('');
   const [taskContract, setTaskContract] = useState(null);
   const [balance, setBalance] = useState(0);
   const [userAdr, setUserAdr] = useState('');
-=======
-  const [submittedText, setSubmittedText] = useState(false);
-
-  function displaySubmittedText() {
-    setSubmittedText(true);
-    setTimeout(() => {
-      setSubmittedText(false);
-    }, 2000);
-  }
->>>>>>> 1da3c20c7e432c38319c0f6b11d72f93a28e727d
 
   const web3 = new Web3('http://localhost:9545');
 
   const submitTask = async (e) => {
     e.preventDefault();
     const accounts = await web3.eth.getAccounts();
-    console.log('Available Addresses:', accounts);
+    //console.log('Available Addresses:', accounts);
     try {
       const reward = parseInt(taskReward);
       if(balance >= reward) {
@@ -129,7 +118,9 @@ export default function AskForHelpPage({ username }) {
         </label>
         <button type="submit">Submit</button>
       </form>
-      { submittedText ? <p>Task submitted successfully</p> : null}
+
     </>
   );
 }
+
+//{ submittedText ? <p>Task submitted successfully</p> : null}

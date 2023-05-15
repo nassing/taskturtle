@@ -1,4 +1,5 @@
 import sqlite3
+import secrets
 
 def getAllUsers():
     with sqlite3.connect('database.db') as conn:
@@ -63,8 +64,13 @@ def completeTaskDB(task_id, helper_username):
 
 def addGuestUser(guest_token):
     with sqlite3.connect('database.db') as conn:
+        
+        private_key = secrets.token_hex(32)  # Generate a random 32-byte private key
+        address = private_key[64-40:]  # Take the last 40 characters as the address
+    
+
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO users (username, guest_token) VALUES (?)', ("user" + guest_token, guest_token))
+        cursor.execute('INSERT INTO users (username, guest_token, address) VALUES (?)', ("user" + guest_token, guest_token,'0x'+address))
         conn.commit()
 
 
@@ -90,4 +96,11 @@ def addUserLink(username,link) :
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
         cursor.execute('UPDATE users SET link_to_profile_picture = ? WHERE username = ?', (link, username))
+        conn.commit()
+
+
+def addUserAddr(username,address) :
+    with sqlite3.connect('database.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute('UPDATE users SET address = ? WHERE username = ?', (address, username))
         conn.commit()

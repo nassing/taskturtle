@@ -12,6 +12,7 @@ export default function ProfilePage({username}) {
   const [balance, setBalance] = useState(0);
   const [userAdr, setUserAdr] = useState('');
   const [newLink,setNewLink] = useState('');
+  const [newAdr,setNewAdr] = useState('');
   const [imageExists, setImageExists] = useState(true);
 
   const [ongoinsTasks, setOngoingTasks] = useState([]);
@@ -98,10 +99,12 @@ export default function ProfilePage({username}) {
           setBalance(data.balance);
           setNewLink('');
           setImageExists(true);
+          setUserAdr(data.address);
         }
         else {
           setPhotoLink('');
           setBalance(0);
+          setUserAdr(data.address);
         }
       })
       .catch(error => console.log(error.message));
@@ -139,6 +142,45 @@ export default function ProfilePage({username}) {
     })
     .catch(error => console.log(error.message));
   }
+
+  const handleSubmitAddress = async (e) => {
+    e.preventDefault();
+    
+    
+    const validAddressFormat = /^0x[a-fA-F0-9]{40}$/;
+    if (!validAddressFormat.test(newAdr)) {
+      console.log("Invalid address format");
+      return;
+    }
+    setUserAdr(newAdr);
+    const data = {
+      username: username,
+      address : newAdr,
+    };
+    setNewLink('');
+    fetch('http://localhost:4859/submitNewAddr', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (response.ok) {
+        response.text().then(text => {
+          if(text === "") {
+            console.log("Link updated successfully");
+          }
+          else
+          {
+            console.log(text);
+          }
+        })
+      }
+    })
+    .catch(error => console.log(error.message));
+  }
+  
   
   //Updating both tasklist on entry of the page :;
 
@@ -199,8 +241,14 @@ export default function ProfilePage({username}) {
       <div className='profile-elt' > Welcome {username} !</div>
       
       <div className='profile-elt' > Here is your balance : {balance} </div>
-      <div className='profile-elt' > Here is your adresse : {userAdr} </div>
-      
+      <div className='profile-elt' > Here is your addresse : {userAdr} </div>
+      <form className="help-form profile-elt" onSubmit={handleSubmitAddress}>
+          <label>
+            Modify your address (Ox...):
+            <input type="text" value={newAdr} onChange={e => setNewAdr(e.target.value)} />
+          </label>
+          <input className="input-submit profile-button" type="submit" value="Submit" />
+        </form>
     </div>
     <div className='profile-title profile-elt profile-margin-top'> My Tasks </div>         
     

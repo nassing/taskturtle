@@ -14,6 +14,12 @@ from flask_cors import CORS
 import sqlite3
 
 from utilsdb import *
+import os
+from initdb import init_db
+
+# Check if the database file exists, else creates it
+if not os.path.exists("database.db"):
+    init_db()
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -108,9 +114,10 @@ def getProfile():
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            req = cur.execute("SELECT link_to_profile_picture,balance FROM users WHERE username = ?", (username,))
+            req = cur.execute("SELECT link_to_profile_picture,balance,address FROM users WHERE username = ?", (username,))
             req = req.fetchone()
-            data = {"link": req[0],"balance": req[1]}
+            data = {"link": req[0],"balance": req[1],"address":req[2]}
+
             if(data['link'] == None) :
                 data['link'] = ''
             return jsonify(data)
@@ -129,6 +136,17 @@ def submitNewLink():
     except Exception as e:
         return jsonify({"error" : "submitNewLink, " + str(e)})
     
+@app.route("/submitNewAddr", methods=["POST"])
+def submitNewAddr():
+    username = request.json.get('username')
+    address = request.json.get('address')
+    try:
+        addUserAddr(username=username,address=address)
+        return jsonify({"sucess" : True})
+    except Exception as e:
+        return jsonify({"error" : "submitNewAddr, " + str(e)})
+    
+    
 @app.route("/getTasks", methods=["GET"])
 def getTasks():
     return jsonify(getUncompletedTasks())
@@ -140,11 +158,13 @@ def guestRegister():
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            cur.execute("INSERT INTO users (username, guest_token) VALUES (?, ?)", (username, token))
+            private_key = secrets.token_hex(32)  # Generate a random 32-byte private key
+            address = private_key[64-40:]  # Take the last 40 characters as the address
+            cur.execute("INSERT INTO users (username, guest_token,address) VALUES (?, ?, ?)", (username, token,'0x'+ address))
             conn.commit()
             return ""
-    except:
-        return "Error"
+    except Exception as e:
+        return jsonify({"error" : "guestRegister, " + str(e)})
     
 @app.route("/getUser", methods=["POST"])
 def getUser():

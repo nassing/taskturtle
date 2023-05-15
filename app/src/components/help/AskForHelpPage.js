@@ -12,6 +12,7 @@ export default function AskForHelpPage({ username,setBalanceG }) {
   const [taskContract, setTaskContract] = useState(null);
   const [balance, setBalance] = useState(0);
   const [userAdr, setUserAdr] = useState('');
+  const [summitText,setSummittext] = useState('');
 
   const web3 = new Web3('http://localhost:9545');
 
@@ -24,7 +25,8 @@ export default function AskForHelpPage({ username,setBalanceG }) {
       if(balance >= reward) {
         const gas = await taskContract.methods.createTask(reward,taskDescription).estimateGas({ from: userAdr.slice(-40) });
         const result = await taskContract.methods.createTask(reward,taskDescription).send({ from: userAdr.slice(-40), gas });
-
+        setTaskDescription("");
+        setTaskReward("");
         const data = {
           amount: reward,
           username : username,
@@ -48,6 +50,7 @@ export default function AskForHelpPage({ username,setBalanceG }) {
               setBalance(data.balance);
               setBalanceG(data.balance);
               console.log(data.balance);
+              setSummittext("Task submitted");
             
           })
           .catch(error => console.log(error.message));
@@ -55,6 +58,7 @@ export default function AskForHelpPage({ username,setBalanceG }) {
       }
       else {
         console.log("Balance isn't high enough");
+        setSummittext("Your balance isn't high enough to provide for this reward");
       }  
     } catch (error) {
       console.error('Error accepting task:', error);
@@ -145,6 +149,7 @@ export default function AskForHelpPage({ username,setBalanceG }) {
           <input type="text" value={taskReward} onChange={(e) => setTaskReward(e.target.value)} pattern="[0-9]*"/>
         </label>
         <button type="submit">Submit</button>
+        <label className= 'label-ask'> {summitText}</label>
       </form>
 
     </>

@@ -49,3 +49,10 @@
 .task-other-info {
     grid-area: 3 / 2 / 4 / 5;
 }
+
+.label-ask{
+    margin-top:2vh;
+    font-size: 1.65em;
+    max-width: 17vw;
+    text-align: center;
+}

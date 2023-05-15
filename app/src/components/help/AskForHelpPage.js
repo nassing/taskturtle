@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Web3 from 'web3';
 import TaskTurtle from '../../contracts/TaskTurtle.abi.json';
 
-export default function AskForHelpPage({ username }) {
+export default function AskForHelpPage({ username,setBalanceG }) {
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskLocation, setTaskLocation] = useState('');
@@ -24,7 +24,34 @@ export default function AskForHelpPage({ username }) {
       if(balance >= reward) {
         const gas = await taskContract.methods.createTask(reward,taskDescription).estimateGas({ from: userAdr.slice(-40) });
         const result = await taskContract.methods.createTask(reward,taskDescription).send({ from: userAdr.slice(-40), gas });
-        console.log('Task created:', result);
+
+        const data = {
+          amount: reward,
+          username : username,
+        };
+    
+        fetch('http://localhost:4859/removeMoney', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+            } else {
+              console.log('Something went wrong ...');
+            }
+          })
+          .then(data => {
+              setBalance(data.balance);
+              setBalanceG(data.balance);
+              console.log(data.balance);
+            
+          })
+          .catch(error => console.log(error.message));
+          console.log('Task created:', result);
       }
       else {
         console.log("Balance isn't high enough");
@@ -92,6 +119,7 @@ export default function AskForHelpPage({ username }) {
         })
         .then(data => {
             setBalance(data.balance);
+            setBalanceG(data.balance);
             setUserAdr(data.address);
             setUserPKeys(data.p_keys);
             // web3.eth.accounts.wallet.add(data.p_keys);

@@ -6,6 +6,7 @@ import App from './App';
 import AuthPage from './auth/AuthPage';
 import Cookies from 'js-cookie';
 import Web3 from 'web3';
+import { SocketBlockSubscriber } from 'ethers';
 
 export default function Main() {
 
@@ -147,7 +148,7 @@ export default function Main() {
       headers: {
         'Content-Type': 'application/json'
         },
-        body: JSON.stringify({username: username})
+        body: JSON.stringify({username: username, amount:100})
       })
       .then(response => {
         if (response.ok) {
@@ -169,7 +170,7 @@ export default function Main() {
     );
   } else {
     return (
-      <App username={username} balance={balance} logout={logout} giveMoney={giveMoney} getUser={getUser} />
+      <App username={username} balance={balance} logout={logout} giveMoney={giveMoney} getUser={getUser} setBalance={setBalance} />
     )
   }
   

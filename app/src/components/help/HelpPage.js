@@ -6,7 +6,7 @@ import Web3 from 'web3';
 import TaskTurtle from '../../contracts/TaskTurtle.abi.json';
 import { ethers } from "ethers";
 
-export default function HelpPage({username, getUser, setTransactionID, setCurrentPage}) {
+export default function HelpPage({username, getUser, setTransactionID, setCurrentPage,setBalanceG}) {
 
   const [taskList, setTaskList] = useState([]);
   const [contractAddresses, setContractAddresses] = useState([]);
@@ -117,6 +117,7 @@ export default function HelpPage({username, getUser, setTransactionID, setCurren
         if ('link' in data) {
           setPhotoLink(data.link);
           setBalance(data.balance);
+          setBalanceG(data.balance);
           setUserAdr(data.address);
           setUserPKeys(data.p_keys);
           // web3.eth.accounts.wallet.add(data.p_keys);
@@ -145,28 +146,17 @@ export default function HelpPage({username, getUser, setTransactionID, setCurren
   }
 
 
-  const completeTask = (id) => {
-    fetch('http://localhost:4859/completeTask', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({task_id: id, helper_username: username})
-    })
-    .then(response => {
-      if(response.ok) {
-        response.text().then(text => {
-          if(text === "") {
-          //getTaskList();
-          getUser();
-        } else {
-          console.log(response.text());
-        }})
-      } else {
-        console.log('Something went wrong ...');
+
+
+  async function acceptTask(_id,price) {
+    try {
+      if( true) {
+        const result = await taskContract.methods.acceptTask(_id).send({ from: userAdr.slice(-40), price });
+        console.log('Task accepted:', result);
       }
-    })
-    .catch(error => console.log(error.message));
+    } catch (error) {
+      console.error('Error accepting task:', error);
+    }
   }
 
   const goToTransactionPage = (id) => {
@@ -177,7 +167,7 @@ export default function HelpPage({username, getUser, setTransactionID, setCurren
   return(
     <>
       <div className="profile-task-list">
-            <div className='profile-title'> Accepted Transactions </div>
+            <div className='profile-title'>  Pending tasks </div>
             {taskList.map((task, index) => (
               <div className="profile-task" key={index}>
                 <div className='profile-task-header'>
@@ -189,7 +179,7 @@ export default function HelpPage({username, getUser, setTransactionID, setCurren
                   {task.accepted?<div className='profile-task-elt'> Accepted by: {task.performer} </div>:null}
                   <div className='profile-task-elt'> Price : {task.price} </div>
                   <div className='profile-task-elt'> {task.desc} </div>
-                  <button className='profile-task-elt profile-task-button' onClick={() => completeTask(task.id)}>  Finish Task </button>
+                  <button className='profile-task-elt profile-task-button' onClick={() => acceptTask(task.id,task.price)}>  Accept this task </button>
                 </div>
               </div>
             ))}

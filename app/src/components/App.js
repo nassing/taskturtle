@@ -12,7 +12,7 @@ import Transaction from './transactions/Transaction';
 
 import {PAGE} from './global/Enums';
 
-export default function App({username, balance, logout, giveMoney, getUser}) {
+export default function App({username, balance, logout, giveMoney, getUser, setBalance}) {
 
   const [currentPage, setCurrentPage] = useState(PAGE.APP);
   const [transactionID, setTransactionID] = useState(0);
@@ -33,7 +33,7 @@ export default function App({username, balance, logout, giveMoney, getUser}) {
       <>
         <TopBar username={username} balance={balance} logout={logout} setPage={setPage} parentPage={PAGE.APP} currPage={PAGE.HELP} />
         <Title />
-        <HelpPage username={username} getUser={getUser} setTransactionID={setTransactionID} setCurrentPage={setCurrentPage}/>
+        <HelpPage username={username} getUser={getUser} setTransactionID={setTransactionID} setCurrentPage={setCurrentPage} setBalanceG={setBalance}/>
       </>
     )
   } else if(currentPage === PAGE.ASKFORHELP) {
@@ -41,7 +41,7 @@ export default function App({username, balance, logout, giveMoney, getUser}) {
       <>
         <TopBar username={username} balance={balance} logout={logout} setPage={setPage} parentPage={PAGE.APP}  currPage = {PAGE.ASKFORHELP}/>
         <Title />
-        <AskForHelpPage username={username}/>
+        <AskForHelpPage username={username} setBalanceG={setBalance}/>
       </>
     )
   
@@ -50,7 +50,7 @@ export default function App({username, balance, logout, giveMoney, getUser}) {
       <>
         <TopBar username={username} balance={balance} logout={logout} setPage={setPage} parentPage={PAGE.APP}  currPage = {PAGE.PROFILE}/>
         <Title />
-        <ProfilePage username={username}/>
+        <ProfilePage username={username} setBalanceG={setBalance}/>
       </>
     )
   } else if(currentPage === PAGE.TRANSACTION) {

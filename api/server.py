@@ -190,16 +190,44 @@ def getUser():
 @app.route("/giveMoney", methods=["POST"])
 def giveMoney():
     username = request.json.get('username')
+    amount = request.json.get('amount')
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            cur.execute("UPDATE users SET balance = balance + ? WHERE username=?", (100, username))
+           
+            cur.execute("UPDATE users SET balance = balance + ? WHERE username=?", (amount, username))
+            
             conn.commit()
-            cur.execute("SELECT balance FROM users WHERE username=?", (username,))
-            balance = cur.fetchone()[0]
+            cur = conn.cursor()
+            
+            req = cur.execute("SELECT balance FROM users WHERE username=?", (username,))
+            req =req.fetchone()
+            balance = req[0]
+            
             return jsonify({"balance" : balance})
     except Exception as e:
         return jsonify({"error" : "giveMoney, " + str(e)})
+    
+@app.route("/removeMoney", methods=["POST"])
+def removeMoney():
+    username = request.json.get('username')
+    amount = request.json.get('amount')
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+           
+            cur.execute("UPDATE users SET balance = balance - ? WHERE username=?", (amount, username))
+            
+            conn.commit()
+            cur = conn.cursor()
+            
+            req = cur.execute("SELECT balance FROM users WHERE username=?", (username,))
+            req =req.fetchone()
+            balance = req[0]
+            
+            return jsonify({"balance" : balance})
+    except Exception as e:
+        return jsonify({"error" : "removeMoney, " + str(e)})
     
 @app.route("/completeTask", methods=["POST"])
 def completeTask():

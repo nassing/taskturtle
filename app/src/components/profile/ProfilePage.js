@@ -5,7 +5,7 @@ import TaskTurtle from '../../contracts/TaskTurtle.abi.json';
 import { ethers } from "ethers";
 
 
-export default function ProfilePage({username}) {
+export default function ProfilePage({username,setBalanceG}) {
 
   const [contractAddresses, setContractAddresses] = useState([]);
   const [taskContract, setTaskContract] = useState(null);
@@ -147,6 +147,7 @@ export default function ProfilePage({username}) {
         if ('link' in data) {
           setPhotoLink(data.link);
           setBalance(data.balance);
+          setBalanceG(data.balance);
           setNewLink('');
           setImageExists(true);
           setUserAdr(data.address);
@@ -255,6 +256,32 @@ export default function ProfilePage({username}) {
   async function completeAcceptedTask(taskId, senderAddress, price) {
     try {
       const result = await taskContract.methods.acceptTask(taskId).send({ from: senderAddress, price });
+      const data = {
+        amount: price,
+        username : username,
+      };
+  
+      fetch('http://localhost:4859/giveMoney', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+          } else {
+            console.log('Something went wrong ...');
+          }
+        })
+        .then(data => {
+            setBalance(data.balance);
+            setBalanceG(data.balance);
+            console.log(data.balance);
+          
+        })
+        .catch(error => console.log(error.message));
       console.log('Task accepted:', result);
     } catch (error) {
       console.error('Error accepting task:', error);

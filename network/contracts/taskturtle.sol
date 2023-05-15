@@ -53,6 +53,7 @@ contract TaskTurtle {
         require(!task.completed, "Task already completed");
         require(task.performer == address(0), "Task already accepted by a performer");
         require(msg.value == task.price, "Incorrect payment amount");
+        require(msg.sender != task.requester, "You accept your own task");
 
         task.performer = msg.sender;
         task.accepted = true;

@@ -26,7 +26,7 @@ Problèmes liés à la blockchaine qui nous empêche de mettre en place toute la
     - Des transactions qui échouent faute de gas (on a pas réussi à en ajouter depuis l'app à nos utilisateurs, ce qui nous empêchent d'utiliser certaines transactions de nos contrats, et donc de les tester pour fix d'éventuels bugs)
     - Truffle capricieux qui refuse de se lancer, de manière aléatoire, une fois sur 2. Or la blochaine est réinitialisée à chaque démarrage -> impossible d'avoir des données de tests consistantes
 
-Fonctionnalités de la v2 qui fonctionnent :
+Fonctionnalités de la v2 qui fonctionnent  (contrat taskTurtle):
     - Stockage des tasks sur la blockchaine :
         On est capabable de les récupérer depuis la blockchaine;
         On est capabable d'en ajouter (AskForHelp);

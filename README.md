@@ -10,7 +10,7 @@ Il faut ensuite écrire la commande :  `migrate --network developmment` une fois
 
 Il est possible que vous rencontriez des problèmes lors du lancement de la blockchain locale : nous en avons également fait l'expérience.
 
-Si le réseau blockchain ne marche pas, essayer le commit 1da3c20c7e432c38319c0f6b11d72f93a28e727d
+Si le réseau blockchain ne marche pas, essayer le commit 1da3c20c7e432c38319c0f6b11d72f93a28e727d sans déployer le réseau.
 
 Étant donné sa nature capricieuse, nous n'avons pas réellement pu tester la version 2 de notre application ni nos contrats Solidity. Néanmoins, les contrats sont écrits et devraient a priori fonctionner s'ils sont liés à l'application React.
 
@@ -33,3 +33,7 @@ Les fonctionnalités de la version 2 qui fonctionnent (contrat "TaskTurtle") :
 Les fonctionnalités de la version 2 qui ne fonctionnent pas :
 
     Accepter une tâche depuis la page "Help" entraîne une erreur "Pas assez de gas" ou une transaction revertée sans raison. Cela bloque toute l'application en conséquence
+
+Les fonctionnalités sur lesquelles nous avons travaillé mais qui n'ont pas abouties:
+
+    L'authentification via Auth0, qui ne marche pas tout à fait. Seule l'authentification invité fonctionne.

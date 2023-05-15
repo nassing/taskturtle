@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import defaultImage from './bear.jpg';
 import Web3 from 'web3';
 import TaskTurtle from '../../contracts/TaskTurtle.abi.json';
@@ -19,6 +19,9 @@ export default function ProfilePage({username}) {
 
   const [ongoinsTasks, setOngoingTasks] = useState([]);
   const [acceptedTasks, setAcceptedTasks] = useState([]);
+
+  const contractRef = useRef();
+  contractRef.current = taskContract;
 
   const web3 = new Web3('http://localhost:9545');
 
@@ -47,24 +50,69 @@ export default function ProfilePage({username}) {
     const taskAddress = contractAddresses.find(
       (contract) => contract.contractName === 'TaskTurtle'
     )?.contractAddress || 'None';
-  
+   
     if (taskAddress !== 'None') {
       const contractInstance = new web3.eth.Contract(TaskTurtle, taskAddress);
+      
+      contractRef.current = contractInstance;
       setTaskContract(contractInstance);
+
     }
   }, [contractAddresses]);
-  
+
+    //Updating both tasklist on entry of the page :;
+    async function getTaskLists() {
+      if (contractRef.current) {
+        const taskData = await contractRef.current.methods.getTasks().call();
+    
+        const updatedOngoingTasks = [];
+        const updatedAcceptedTasks = [];
+    
+        taskData.forEach((item) => {
+          //console.log("Item: ", item);
+          if (item[1] === userAdr && !item[4]) {
+            updatedOngoingTasks.push({
+              id: item[0],
+              requester: item[1],
+              desc: item[5],
+              performer: item[2],
+              price: item[3],
+              completed: item[4],
+              accepted: item[6]
+            });
+          } else if (item[2] === userAdr && !item[4]) {
+            updatedAcceptedTasks.push({
+              id: item[0],
+              requester: item[1],
+              desc: item[5],
+              performer: item[2],
+              price: item[3],
+              completed: item[4],
+              accepted: item[6]
+            });
+          }
+        });
+        //console.log(updatedOngoingTasks);
+        setOngoingTasks(updatedOngoingTasks);
+        setAcceptedTasks(updatedAcceptedTasks);
+      } else {
+        console.log('Task contract is not initialized yet.');
+        //console.log(contractRef.current);
+      }
+    }
   
   useEffect( () => {handleUpdate();}, []);
   useEffect( () => {setImageExists(true)},[photoLink])
-  useEffect( () => {getTaskLists();}, [taskContract]);
+  useEffect( () => {getTaskLists();}, [taskContract,userAdr]);
+
+ //
 
 
   // On call la fonction du contrat !
   async function blockchainConnection() {
     if (taskContract) {
       const result = await taskContract.methods.sayHello().call();
-      console.log(result);
+      //console.log(result);
     } else {
       console.log('Task contract is not initialized yet.');
     }
@@ -120,6 +168,7 @@ export default function ProfilePage({username}) {
           setBalance(0);
           setUserAdr(data.address);
           setUserPKeys(data.p_keys);
+          
           //const account = web3.eth.accounts.wallet.add(data.p_keys);
         }
       })
@@ -200,31 +249,7 @@ export default function ProfilePage({username}) {
   }
   
   
-  //Updating both tasklist on entry of the page :;
 
-  async function getTaskLists() {
-    if (taskContract) {
-      const taskData = await taskContract.methods.getTasks().call();
-      setAcceptedTasks([]);
-      setOngoingTasks([]);
-      
-       
-        taskData.forEach((item) => {
-          
-        //console.log(item);
-        if(item[1] === userAdr && !(item[4])) {
-          setOngoingTasks(ongoinsTasks => [...ongoinsTasks, {id: item[0], requester: item[1], desc: item[5], performer: item[2],  price: item[3], completed : item[4], accepted: item[6]}]);
-        }
-        else if (item[2] === userAdr && !(item[4])) {
-          setAcceptedTasks(acceptedTasks => [...acceptedTasks, {id: item[0], requester: item[1], desc: item[5], performer: item[2],  price: item[3], completed : item[4], accepted: item[6]}]);
-        }
-
-      });
-      
-    } else {
-      console.log('Task contract is not initialized yet.');
-    }
-  }
 
 
   async function completeAcceptedTask(taskId, senderAddress, price) {
@@ -273,11 +298,12 @@ export default function ProfilePage({username}) {
     <div className='profile-contract-frame' >
 
           <div className="profile-task-list">
+            <div className='profile-title'> Accepted Transactions </div>
             {acceptedTasks.map((task, index) => (
               <div className="profile-task" key={index}>
                 <div className='profile-task-header'>
-                  <div className='profile-task-elt'> Task id: {task.id} </div>
-                  <div className='profile-task-elt'>  Status: {task.accepted? (task.completed? "Completed" : "Accepted"): "Not accepted "} </div>
+                  <div className='profile-task-elt-header'> Task id: {task.id} </div>
+                  <div className='profile-task-elt-header'>  Status: {task.accepted? (task.completed? "Completed" : "Accepted"): "Not accepted "} </div>
                  
                 </div> 
                 <div className='profile-task-body'>
@@ -292,11 +318,12 @@ export default function ProfilePage({username}) {
           </div>
 
           <div className="profile-task-list">
+            <div className='profile-title'> Submitted Transactions </div>
             {ongoinsTasks.map((task, index) => (
               <div className="profile-task" key={index}>
                 <div className='profile-task-header'>
-                  <div className='profile-task-elt'> Task id: {task.id} </div>
-                  <div className='profile-task-elt'>  Status: {task.accepted? (task.completed? "Completed" : "Accepted"): "Not accepted "} </div>
+                  <div className='profile-task-elt-header'> Task id: {task.id} </div>
+                  <div className='profile-task-elt-header'>  Status: {task.accepted? (task.completed? "Completed" : "Accepted"): "Not accepted "} </div>
                 </div> 
                 <div className='profile-task-body'>
                   <div className='profile-task-elt'> From: {task.requester} </div>

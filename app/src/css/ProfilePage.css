@@ -60,8 +60,8 @@
 .profile-contract-frame {
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     width: 95vw;
 }
 
@@ -78,11 +78,12 @@
 }
 
 .profile-task {
+    
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 40vw;
+    width: 35vw;
     min-height: 15vh;
     border-radius: 2vw;
     border : 0.2vw solid;
@@ -97,7 +98,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items:flex-start;
     font-size:1.75em;
 }
 
@@ -111,6 +112,10 @@
 
 .profile-task-elt{
     margin:0.3vh;
+}
+
+.profile-task-elt-header{
+    margin-right:3vw;
 }
 
 .profile-task-button{

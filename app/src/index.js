@@ -14,6 +14,7 @@ import './css/PageSelection.css';
 import './css/TaskList.css';
 import './css/AskForHelp.css';
 import './css/ProfilePage.css';
+import './css/Transaction.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

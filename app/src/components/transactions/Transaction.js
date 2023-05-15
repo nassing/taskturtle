@@ -10,7 +10,7 @@ export default function Transaction({username, transactionID}) {
   const [receiverPictureLink, setReceiverPictureLink] = useState('');
   const [transactionState, setTransactionState] = useState(null);
   const [transactionPrice, setTransactionPrice] = useState(0);
-  const [serviceTitle, setServiceTitle] = useState(0);
+  const [taskTitle, setTaskTitle] = useState('');
 
   const getTransactionData = () => {
     fetch('http://localhost:4859/getTransactionData', {
@@ -28,13 +28,14 @@ export default function Transaction({username, transactionID}) {
         }
       })
       .then(data => {
+        console.log(data);
         setSenderUsername(data.senderUsername);
         setReceiverUsername(data.receiverUsername);
         setSenderPictureLink(data.senderPictureLink);
         setReceiverPictureLink(data.receiverPictureLink);
         setTransactionState(data.transactionState);
         setTransactionPrice(data.transactionPrice);
-        setServiceTitle(data.serviceTitle);
+        setTaskTitle(data.taskTitle);
       })
       .catch(error => console.log(error.message));
   }
@@ -65,39 +66,44 @@ export default function Transaction({username, transactionID}) {
   }, []);
 
   return(
-    <>
-      <div className="sender">
-        <img alt="sender-picture-link" src={senderPictureLink}/>
-        <p>{senderUsername}</p>
-      </div>
-
-      <div className="transaction">
-        <p className="service-title">{serviceTitle}</p>
-        <p className="transaction-price">{transactionPrice}</p>
-        { transactionState === TRANSACTIONSTATE.PENDING && senderUsername === username ? (
-          <button className="confirm-transaction">Pay</button>) 
-          : null }
-        { transactionState === TRANSACTIONSTATE.PENDING && receiverUsername === username ? (
-          <button className="cancel-help">Cancel</button>)
-          : null }
-        { transactionState === TRANSACTIONSTATE.PENDING && receiverUsername === null ? (
-          <button className="accept-help">Help</button>)
-          : null }
-      </div>
-
-      {
-        receiverUsername === null ? (
-          <div className="receiver">
-            <p>Waiting for a helper...</p>
+    <div className="transaction-page">
+      <h1>{taskTitle}</h1>
+      <div className="transaction-info">
+        <div className="sender">
+          <p>Sender</p>
+          <div className="profile-img-frame">
+            <img className="profile-img" alt="sender-picture-link" src={senderPictureLink}/>
           </div>
-        ) : (
-          <div className="receiver">
-            <img alt="receiver-picture-link" src={receiverPictureLink}></img>
-            <p>{receiverUsername}</p>
-          </div>
-        )
-      }
+          <p>{senderUsername}</p>
+        </div>
 
-    </>
+        <div className="transaction">
+          <p className="service-title">{taskTitle}</p>
+          <p className="transaction-price">Price: {transactionPrice}</p>
+          { transactionState === TRANSACTIONSTATE.PENDING && senderUsername === username ? (
+            <button className="confirm-transaction">Pay</button>) 
+            : null }
+          { transactionState === TRANSACTIONSTATE.PENDING && receiverUsername === username ? (
+            <button className="cancel-help">Cancel</button>)
+            : null }
+        </div>
+
+        {
+          transactionState === TRANSACTIONSTATE.PENDING && receiverUsername === null ? (
+            <div className="receiver">
+              <p>Waiting for a helper...</p>
+              <button className="accept-help">Help</button>
+            </div>
+          ) : (
+            <div className="receiver">
+              <div className="profile-img-frame">
+                <img className="profile-img" alt="sender-picture-link" src={receiverPictureLink}/>
+              </div>
+              <p>{receiverUsername}</p>
+            </div>
+          )
+        }
+      </div>
+    </div>
   )
 }

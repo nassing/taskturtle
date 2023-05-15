@@ -1,8 +1,9 @@
 //Page pour aider
 
 import React, { useState, useEffect } from 'react';
+import PAGE from '../global/Enums';
 
-export default function HelpPage({username, getUser}) {
+export default function HelpPage({username, getUser, setTransactionID, setCurrentPage}) {
 
   const [taskList, setTaskList] = useState([]);
   //userProfilePicture, taskImage, postDate, status
@@ -54,6 +55,11 @@ export default function HelpPage({username, getUser}) {
     .catch(error => console.log(error.message));
   }
 
+  const goToTransactionPage = (id) => {
+    setTransactionID(id);
+    setCurrentPage(PAGE.TRANSACTION);
+  }
+
 
   useEffect(() => {
     getTaskList();
@@ -73,7 +79,7 @@ export default function HelpPage({username, getUser}) {
               <h1>{task.title}</h1>
             </div>
 
-            <div className="task-help-button" onClick={() => completeTask(task.id)}>
+            <div className="task-help-button" onClick={() => goToTransactionPage(task.id)}>
               <p>Help him</p>
             </div>
             

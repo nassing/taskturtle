@@ -5,6 +5,7 @@ export const PAGE = {
     HELP: 'HELP',
     ASKFORHELP: 'ASKFORHELP',
     PROFILE : 'PROFILE',
+    TRANSACTION: 'TRANSACTION',
   };
 
 export const TRANSACTIONSTATE = {

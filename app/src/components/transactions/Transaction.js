@@ -70,13 +70,30 @@ export default function Transaction({userToken, transactionID}) {
       <div className="transaction">
         <p className="service-title">{serviceTitle}</p>
         <p className="transaction-price">{transactionPrice}</p>
-        { transactionState == TRANSACTIONSTATE.PENDING && username == senderUsername ? (<button className="confirm-transaction"></button>) : null }
+        { transactionState == TRANSACTIONSTATE.PENDING && senderUsername == username ? (
+          <button className="confirm-transaction">Pay</button>) 
+          : null }
+        { transactionState == TRANSACTIONSTATE.PENDING && receiverUsername == username ? (
+          <button className="cancel-help">Cancel</button>)
+          : null }
+        { transactionState == TRANSACTIONSTATE.PENDING && receiverUsername == null ? (
+          <button className="accept-help">Help</button>)
+          : null }
       </div>
 
-      <div className="receiver">
-        <img src={receiverPictureLink}></img>
-        <p>{receiverUsername}</p>
-      </div>
+      {
+        receiverUsername == null ? (
+          <div className="receiver">
+            <p>Waiting for a helper...</p>
+          </div>
+        ) : (
+          <div className="receiver">
+            <img src={receiverPictureLink}></img>
+            <p>{receiverUsername}</p>
+          </div>
+        )
+      }
+
     </>
   )
 }

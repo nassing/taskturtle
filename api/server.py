@@ -188,10 +188,22 @@ def getTransactionData():
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM transactions WHERE id=?", (transactionID,))
+            cur.execute("SELECT sender_id, receiver_id, state, price, task_id FROM transactions WHERE id=?", (transactionID,))
             try:
                 transaction = cur.fetchone()
-                return jsonify({senderUsername : transaction[1], receiverUsername : transaction[2], senderPictureLink : transaction[3], receiverPictureLink : transaction[4], transactionState: transaction[5], transactionPrice: transaction[6], serviceTitle: transaction[7] })
+                try:
+                    sender_id = transaction[0]
+                    cur.execute("SELECT username, link_to_profile_picture FROM users WHERE id=?", (sender_id,))
+                    senderUsername, senderPictureLink = cur.fetchone()
+                    receiver_id = transaction[1]
+                    cur.execute("SELECT username, link_to_profile_picture FROM users WHERE id=?", (receiver_id,))
+                    receiverUsername, receiverPictureLink = cur.fetchone()
+                    task_id = transaction[4]
+                    cur.execute("SELECT title FROM tasks WHERE id=?", (task_id,))
+                    taskTitle = cur.fetchone()[0]
+                    return jsonify({"senderUsername" : senderUsername, "receiverUsername" : receiverUsername, "senderPictureLink" : senderPictureLink, "receiverPictureLink" : receiverPictureLink, "transactionState": transaction[2], "transactionPrice": transaction[3], "taskTitle": taskTitle })
+                except:
+                    return jsonify({"error" : "Transaction not found"})
             except:
                 return jsonify({"error" : "Transaction not found"})
     except Exception as e:

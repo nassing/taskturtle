@@ -98,10 +98,12 @@ export default function ProfilePage({username}) {
           setBalance(data.balance);
           setNewLink('');
           setImageExists(true);
+          setUserAdr(data.address);
         }
         else {
           setPhotoLink('');
           setBalance(0);
+          setUserAdr(data.address);
         }
       })
       .catch(error => console.log(error.message));

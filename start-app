@@ -2,4 +2,5 @@
 
 cd app
 npm install
+npm install web3 
 npm run start -- port=2741

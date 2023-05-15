@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd network
+sudo npm install -g truffle
+truffle develop

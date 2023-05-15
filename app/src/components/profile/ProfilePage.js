@@ -2,16 +2,63 @@
 
 import React, {useEffect, useState} from 'react';
 import defaultImage from './bear.jpg';
+import Web3 from 'web3';
+import TaskTurtle from '../../contracts/TaskTurtle.abi.json';
+
 
 export default function ProfilePage({username}) {
 
+  const [contractAddresses, setContractAddresses] = useState([]);
+  const [taskContract, setTaskContract] = useState(null);
   const [photoLink, setPhotoLink] = useState('');
   const [balance, setBalance] = useState(0);
   const [newLink,setNewLink] = useState('');
   const [imageExists, setImageExists] = useState(true);
+
+  const web3 = new Web3('http://localhost:9545');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/contractAddresses.txt');
+        const fileContent = await response.text();
+        const lines = fileContent.split('\n');
+        const addresses = lines.map((line) => {
+          const [contractName, contractAddress] = line.split(': ');
+          return { contractName, contractAddress };
+        });
+        setContractAddresses(addresses);
+      } catch (error) {
+        console.error('Error fetching contract addresses:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+  useEffect(() => {
+    const taskAddress = contractAddresses.find(
+      (contract) => contract.contractName === 'TaskTurtle'
+    )?.contractAddress || 'None';
+  
+    if (taskAddress !== 'None') {
+      const contractInstance = new web3.eth.Contract(TaskTurtle, taskAddress);
+      setTaskContract(contractInstance);
+    }
+  }, [contractAddresses]);
+  
   
   useEffect( () => {handleUpdate()}, []);
   useEffect( () => {setImageExists(true)},[photoLink])
+
+  async function blockchainConnection() {
+    if (taskContract) {
+      const result = await taskContract.methods.sayHello().call();
+      console.log(result);
+    } else {
+      console.log('Task contract is not initialized yet.');
+    }
+  }
 
   function handleImageError() {
     setImageExists(false);
@@ -117,6 +164,7 @@ export default function ProfilePage({username}) {
       <div className='profile-elt' > Welcome {username} !</div>
       
       <div className='profile-elt' > Here is your balance : {balance} </div>
+      <button className='profile-elt' onClick={blockchainConnection} > Click me!  </button>
     </div>
   </>
   )

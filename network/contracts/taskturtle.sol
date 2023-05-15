@@ -1,6 +1,6 @@
 pragma solidity ^0.8.19;
 
-contract TaskContract {
+contract TaskTurtle {
 
     struct Task {
         uint id;
@@ -12,6 +12,7 @@ contract TaskContract {
 
     Task[] public tasks;
     mapping(uint => bool) public taskExists;
+    address escroWallet = 0xdF0987Eab5cEa97151e5cB42A61dD7D8D752ef37;
 
     event TaskCreated(uint taskId, address requester, uint price);
     event TaskAccepted(uint taskId, address performer);
@@ -70,5 +71,9 @@ contract TaskContract {
         payable(task.performer).transfer(task.price);
 
         emit PaymentReleased(_taskId, task.performer);
+    }
+
+    function sayHello() external pure returns (string memory) {
+        return "You are indeed connected to the BlockChain ! Congrats !";
     }
 }

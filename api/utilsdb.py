@@ -70,7 +70,7 @@ def addGuestUser(guest_token):
     
 
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO users (username, guest_token, address) VALUES (?)', ("user" + guest_token, guest_token,'0x'+address))
+        cursor.execute('INSERT INTO users (username, guest_token, address,p_keys) VALUES (?,?,?,?)', ("user" + guest_token, guest_token,'0x'+address,private_key))
         conn.commit()
 
 
@@ -99,8 +99,9 @@ def addUserLink(username,link) :
         conn.commit()
 
 
-def addUserAddr(username,address) :
+def addUserKeys(username,p_keys) :
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('UPDATE users SET address = ? WHERE username = ?', (address, username))
+        address = p_keys[64-40:]  # Take the last 40 characters as the address
+        cursor.execute('UPDATE users SET p_keys = ?,address = ? WHERE username = ?', (p_keys,'0x'+address, username))
         conn.commit()

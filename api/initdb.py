@@ -10,7 +10,7 @@ import sqlite3
 def init_db() :
     
     with sqlite3.connect('database.db') as conn:
-        conn.execute('CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, guest_token TEXT NOT NULL UNIQUE, link_to_profile_picture TEXT, balance INTEGER DEFAULT 0, address TEXT NOT NULL UNIQUE)')
+        conn.execute('CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, guest_token TEXT NOT NULL UNIQUE, link_to_profile_picture TEXT, balance INTEGER DEFAULT 0, address TEXT NOT NULL UNIQUE, p_keys TEXT NOT NULL UNIQUE)')
 
         conn.execute('CREATE TABLE transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, sender_id INTEGER NOT NULL, receiver_id INTEGER NOT NULL, amount INTEGER NOT NULL, date TEXT NOT NULL, FOREIGN KEY(sender_id) REFERENCES users(id), FOREIGN KEY(receiver_id) REFERENCES users(id))')
 

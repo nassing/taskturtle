@@ -11,8 +11,9 @@ export default function ProfilePage({username}) {
   const [photoLink, setPhotoLink] = useState('');
   const [balance, setBalance] = useState(0);
   const [userAdr, setUserAdr] = useState('');
+  const [userPKeys, setUserPKeys] = useState('');
   const [newLink,setNewLink] = useState('');
-  const [newAdr,setNewAdr] = useState('');
+  const [newKeys,setNewKeys] = useState('');
   const [imageExists, setImageExists] = useState(true);
 
   const [ongoinsTasks, setOngoingTasks] = useState([]);
@@ -100,11 +101,32 @@ export default function ProfilePage({username}) {
           setNewLink('');
           setImageExists(true);
           setUserAdr(data.address);
+          setUserPKeys(data.p_keys);
+          web3.eth.accounts.wallet.add(data.p_keys);
+          const account = web3.eth.accounts.wallet.add(data.p_keys);
+
+          if (account !== null) {
+            // Account was successfully unlocked
+            console.log('Account unlocked:', account.address);
+          } else {
+            // Failed to unlock the account
+            console.log('Failed to unlock account');
+          }
         }
         else {
           setPhotoLink('');
           setBalance(0);
           setUserAdr(data.address);
+          setUserPKeys(data.p_keys);
+          const account = web3.eth.accounts.wallet.add(data.p_keys);
+
+          if (account !== null) {
+            // Account was successfully unlocked
+            console.log('Account unlocked:', account.address);
+          } else {
+            // Failed to unlock the account
+            console.log('Failed to unlock account');
+}
         }
       })
       .catch(error => console.log(error.message));
@@ -143,22 +165,22 @@ export default function ProfilePage({username}) {
     .catch(error => console.log(error.message));
   }
 
-  const handleSubmitAddress = async (e) => {
+  const handleSubmitKeys = async (e) => {
     e.preventDefault();
     
     
-    const validAddressFormat = /^0x[a-fA-F0-9]{40}$/;
-    if (!validAddressFormat.test(newAdr)) {
-      console.log("Invalid address format");
+    const validAddressFormat = /^0x[a-fA-F0-9]{64}$/;
+    if (!validAddressFormat.test(newKeys)) {
+      console.log("Invalid keys format. Good format is Ox... followed by a 64-long hex.");
       return;
     }
-    setUserAdr(newAdr);
+    setUserAdr('0x'+newKeys.slice(-40));
     const data = {
       username: username,
-      address : newAdr,
+      p_keys : newKeys,
     };
     setNewLink('');
-    fetch('http://localhost:4859/submitNewAddr', {
+    fetch('http://localhost:4859/submitNewKeys', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -241,11 +263,11 @@ export default function ProfilePage({username}) {
       <div className='profile-elt' > Welcome {username} !</div>
       
       <div className='profile-elt' > Here is your balance : {balance} </div>
-      <div className='profile-elt' > Here is your addresse : {userAdr} </div>
-      <form className="help-form profile-elt" onSubmit={handleSubmitAddress}>
+      <div className='profile-elt' > Here is your address : {userAdr} </div>
+      <form className="help-form profile-elt" onSubmit={handleSubmitKeys}>
           <label>
-            Modify your address (Ox...):
-            <input type="text" value={newAdr} onChange={e => setNewAdr(e.target.value)} />
+            Modify your private keys (Ox...):
+            <input type="text" value={newKeys} onChange={e => setNewKeys(e.target.value)} />
           </label>
           <input className="input-submit profile-button" type="submit" value="Submit" />
         </form>

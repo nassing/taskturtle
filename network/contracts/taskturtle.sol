@@ -13,6 +13,7 @@ contract TaskTurtle {
     }
 
     Task[] public tasks;
+    uint public tasks_count = 0;
     mapping(uint => bool) public taskExists;
     address escroWallet = 0xdF0987Eab5cEa97151e5cB42A61dD7D8D752ef37;
 
@@ -25,11 +26,12 @@ contract TaskTurtle {
       return tasks;
     }
 
-    function createTask(uint _taskId, uint _price, string memory _desc) public {
-        require(!taskExists[_taskId], "Task with this id already exists");
-
+    function createTask(uint _price, string memory _desc) public {
+        
+        tasks_count = tasks_count+1;
+        require(!taskExists[tasks_count], "Task with this id already exists");
         Task memory newTask = Task({
-            id: _taskId,
+            id: tasks_count,
             requester: msg.sender,
             performer: address(0),
             price: _price,
@@ -39,9 +41,9 @@ contract TaskTurtle {
         });
 
         tasks.push(newTask);
-        taskExists[_taskId] = true;
+        taskExists[tasks_count] = true;
 
-        emit TaskCreated(_taskId, msg.sender, _price);
+        emit TaskCreated(tasks_count, msg.sender, _price);
     }
 
     function acceptTask(uint _taskId) public payable {

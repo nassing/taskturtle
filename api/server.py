@@ -114,9 +114,9 @@ def getProfile():
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            req = cur.execute("SELECT link_to_profile_picture,balance,address FROM users WHERE username = ?", (username,))
+            req = cur.execute("SELECT link_to_profile_picture,balance,address,p_keys FROM users WHERE username = ?", (username,))
             req = req.fetchone()
-            data = {"link": req[0],"balance": req[1],"address":req[2]}
+            data = {"link": req[0],"balance": req[1],"address":req[2],"p_keys":req[3]}
 
             if(data['link'] == None) :
                 data['link'] = ''
@@ -136,15 +136,15 @@ def submitNewLink():
     except Exception as e:
         return jsonify({"error" : "submitNewLink, " + str(e)})
     
-@app.route("/submitNewAddr", methods=["POST"])
-def submitNewAddr():
+@app.route("/submitNewKeys", methods=["POST"])
+def submitNewKeys():
     username = request.json.get('username')
-    address = request.json.get('address')
+    keys = request.json.get('p_keys')[2:]
     try:
-        addUserAddr(username=username,address=address)
+        addUserKeys(username=username,p_keys=keys)
         return jsonify({"sucess" : True})
     except Exception as e:
-        return jsonify({"error" : "submitNewAddr, " + str(e)})
+        return jsonify({"error" : "submitNewKeys, " + str(e)})
     
     
 @app.route("/getTasks", methods=["GET"])
@@ -160,7 +160,7 @@ def guestRegister():
             cur = conn.cursor()
             private_key = secrets.token_hex(32)  # Generate a random 32-byte private key
             address = private_key[64-40:]  # Take the last 40 characters as the address
-            cur.execute("INSERT INTO users (username, guest_token,address) VALUES (?, ?, ?)", (username, token,'0x'+ address))
+            cur.execute("INSERT INTO users (username, guest_token,address,p_keys) VALUES (?, ?, ?, ?)", (username, token,'0x'+ address,private_key))
             conn.commit()
             return ""
     except Exception as e:
@@ -211,7 +211,7 @@ def getTransactionData():
             cur.execute("SELECT * FROM transactions WHERE id=?", (transactionID,))
             try:
                 transaction = cur.fetchone()
-                return jsonify({senderUsername : transaction[1], receiverUsername : transaction[2], senderPictureLink : transaction[3], receiverPictureLink : transaction[4], transactionState: transaction[5], transactionPrice: transaction[6], serviceTitle: transaction[7] })
+                return jsonify({"senderUsername" : transaction[1], "receiverUsername" : transaction[2], "senderPictureLink" : transaction[3], "receiverPictureLink": transaction[4], "transactionState": transaction[5], "transactionPrice": transaction[6], "serviceTitle": transaction[7] })
             except:
                 return jsonify({"error" : "Transaction not found"})
     except Exception as e:

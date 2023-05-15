@@ -34,7 +34,7 @@ def getTaskById(task_id):
 def getUncompletedTasks():
     with sqlite3.connect('database.db') as conn:
         cursor = conn.cursor()
-        cursor.execute('SELECT id, title, description, reward, location, author_id FROM tasks WHERE is_completed = 0')
+        cursor.execute('SELECT id, title, description, reward, location, author_id, transaction_id FROM tasks WHERE is_completed = 0')
         data = cursor.fetchall()
         tasks = [{
             "id": task[0],
@@ -42,7 +42,8 @@ def getUncompletedTasks():
             "description": task[2],
             "reward": task[3],
             "location": task[4],
-            "author": cursor.execute('SELECT username FROM users WHERE id = ?', (task[5],)).fetchone()[0]
+            "author": cursor.execute('SELECT username FROM users WHERE id = ?', (task[5],)).fetchone()[0],
+            "transaction_id": task[6],
         } for task in data]
         return tasks
     

@@ -8,12 +8,14 @@ import HelpPage from './help/HelpPage';
 import AskForHelpPage from './help/AskForHelpPage';
 import ProfilePage from './profile/ProfilePage';
 import TopBar from './global/TopBar';
+import Transaction from './transactions/Transaction';
 
 import {PAGE} from './global/Enums';
 
 export default function App({username, balance, logout, giveMoney, getUser}) {
 
   const [currentPage, setCurrentPage] = useState(PAGE.APP);
+  const [transactionID, setTransactionID] = useState(0);
 
   function setPage(_page) {
     if(_page === PAGE.HELP || _page === PAGE.ASKFORHELP || _page === PAGE.PROFILE)
@@ -29,9 +31,9 @@ export default function App({username, balance, logout, giveMoney, getUser}) {
   if(currentPage === PAGE.HELP) {
     return(
       <>
-        <TopBar username={username} balance={balance} logout={logout} setPage={setPage} parentPage={PAGE.APP} currPage = {PAGE.HELP} />
+        <TopBar username={username} balance={balance} logout={logout} setPage={setPage} parentPage={PAGE.APP} currPage={PAGE.HELP} />
         <Title />
-        <HelpPage username={username} getUser={getUser}/>
+        <HelpPage username={username} getUser={getUser} setTransactionID={setTransactionID} setCurrentPage={setCurrentPage}/>
       </>
     )
   } else if(currentPage === PAGE.ASKFORHELP) {
@@ -51,8 +53,15 @@ export default function App({username, balance, logout, giveMoney, getUser}) {
         <ProfilePage username={username}/>
       </>
     )
-  }
-  else {
+  } else if(currentPage === PAGE.TRANSACTIONS) {
+    return(
+      <>
+        <TopBar username={username} balance={balance} logout={logout} setPage={setPage} parentPage={PAGE.APP}  currPage = {PAGE.TRANSACTIONS}/>
+        <Title />
+        <Transaction username={username} transactionID={transactionID}/>
+      </>
+    )
+  } else {
     return(
       <>
         <TopBar username={username} balance={balance} logout={logout} setPage={setPage}  currPage = {PAGE.APP}/>

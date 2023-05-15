@@ -10,8 +10,12 @@ export default function ProfilePage({username}) {
   const [taskContract, setTaskContract] = useState(null);
   const [photoLink, setPhotoLink] = useState('');
   const [balance, setBalance] = useState(0);
+  const [userAdr, setUserAdr] = useState('');
   const [newLink,setNewLink] = useState('');
   const [imageExists, setImageExists] = useState(true);
+
+  const [ongoinsTasks, setOngoingTasks] = useState([]);
+  const [acceptedTasks, setAcceptedTasks] = useState([]);
 
   const web3 = new Web3('http://localhost:9545');
 
@@ -48,8 +52,10 @@ export default function ProfilePage({username}) {
   }, [contractAddresses]);
   
   
-  useEffect( () => {handleUpdate()}, []);
+  useEffect( () => {handleUpdate();}, []);
   useEffect( () => {setImageExists(true)},[photoLink])
+  useEffect( () => {getTaskLists();}, [taskContract]);
+
 
   // On call la fonction du contrat !
   async function blockchainConnection() {
@@ -134,8 +140,36 @@ export default function ProfilePage({username}) {
     .catch(error => console.log(error.message));
   }
   
-  //useEffect( () => {console.log(newLink)}, [newLink]);
+  //Updating both tasklist on entry of the page :;
 
+  async function getTaskLists() {
+    if (taskContract) {
+      const result = await taskContract.methods.getTasks().call();
+      setAcceptedTasks([]);
+      setOngoingTasks([]);
+      for(let item of result) {
+        if(item.requester === userAdr && !(item.completed)) {
+          setOngoingTasks(ongoinsTasks => [...ongoinsTasks, {id: item.id, requester: item.requester, desc: item.desc, performer: item.performer,  price: item.price, completed : item.completed, accepted: item.accepted}]);
+        }
+        else if (item.performer === userAdr && !(item.completed)) {
+          setAcceptedTasks(acceptedTasks => [...acceptedTasks, {id: item.id, requester: item.requester, desc: item.desc, performer: item.performer,  price: item.price, completed : item.completed, accepted: item.accepted}]);
+        }
+      }
+      
+    } else {
+      console.log('Task contract is not initialized yet.');
+    }
+  }
+
+
+  async function completeAcceptedTask(taskId, senderAddress, price) {
+    try {
+      const result = await taskContract.methods.acceptTask(taskId).send({ from: senderAddress, price });
+      console.log('Task accepted:', result);
+    } catch (error) {
+      console.error('Error accepting task:', error);
+    }
+  }
 
   return(
   <>
@@ -157,7 +191,7 @@ export default function ProfilePage({username}) {
             New Photo Link:
             <input type="text" value={newLink} onChange={e => setNewLink(e.target.value)} />
           </label>
-          <input className="input-submit" type="submit" value="Submit" />
+          <input className="input-submit profile-button" type="submit" value="Submit" />
         </form>
 
       </div>
@@ -165,8 +199,53 @@ export default function ProfilePage({username}) {
       <div className='profile-elt' > Welcome {username} !</div>
       
       <div className='profile-elt' > Here is your balance : {balance} </div>
-      <button className='profile-elt' onClick={blockchainConnection} > Click me!  </button>
+      <div className='profile-elt' > Here is your adresse : {userAdr} </div>
+      
+    </div>
+    <div className='profile-title profile-elt profile-margin-top'> My Tasks </div>         
+    
+
+    <div className='profile-contract-frame' >
+
+          <div className="profile-task-list">
+            {acceptedTasks.map((task, index) => (
+              <div className="profile-task" key={index}>
+                <div className='profile-task-header'>
+                  <div className='profile-task-elt'> Task id: {task.id} </div>
+                  <div className='profile-task-elt'>  Status: {task.accepted? (task.completed? "Completed" : "Accepted"): "Not accepted "} </div>
+                 
+                </div> 
+                <div className='profile-task-body'>
+                  <div className='profile-task-elt'> From: {task.requester} </div>
+                  {task.accepted?<div className='profile-task-elt'> Accepted by: {task.performer} </div>:null}
+                  <div className='profile-task-elt'> Price : {task.price} </div>
+                  <div className='profile-task-elt'> {task.desc} </div>
+                  <button className='profile-task-elt profile-task-button' onClick={() => completeAcceptedTask(task.id,userAdr,task.price)}>  Finish Task </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="profile-task-list">
+            {ongoinsTasks.map((task, index) => (
+              <div className="profile-task" key={index}>
+                <div className='profile-task-header'>
+                  <div className='profile-task-elt'> Task id: {task.id} </div>
+                  <div className='profile-task-elt'>  Status: {task.accepted? (task.completed? "Completed" : "Accepted"): "Not accepted "} </div>
+                </div> 
+                <div className='profile-task-body'>
+                  <div className='profile-task-elt'> From: {task.requester} </div>
+                  {task.accepted?<div className='profile-task-elt'> Accepted by: {task.performer} </div>:null} 
+                  <div className='profile-task-elt'> Price : {task.price} </div>
+                  <div className='profile-task-elt'> {task.desc} </div>
+                </div>
+            </div>
+            ))}
+           </div>
+
     </div>
   </>
+
+  
   )
 }

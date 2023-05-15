@@ -8,6 +8,8 @@ contract TaskTurtle {
         address performer;
         uint price;
         bool completed;
+        string desc;
+        bool accepted;
     }
 
     Task[] public tasks;
@@ -19,7 +21,11 @@ contract TaskTurtle {
     event TaskCompleted(uint taskId, address performer);
     event PaymentReleased(uint taskId, address performer);
 
-    function createTask(uint _taskId, uint _price) public {
+    function getTasks() public view returns(Task[] memory){
+      return tasks;
+    }
+
+    function createTask(uint _taskId, uint _price, string memory _desc) public {
         require(!taskExists[_taskId], "Task with this id already exists");
 
         Task memory newTask = Task({
@@ -27,7 +33,9 @@ contract TaskTurtle {
             requester: msg.sender,
             performer: address(0),
             price: _price,
-            completed: false
+            completed: false,
+            desc: _desc,
+            accepted: false
         });
 
         tasks.push(newTask);
@@ -45,6 +53,7 @@ contract TaskTurtle {
         require(msg.value == task.price, "Incorrect payment amount");
 
         task.performer = msg.sender;
+        task.accepted = true;
 
         emit TaskAccepted(_taskId, msg.sender);
     }

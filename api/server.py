@@ -251,6 +251,32 @@ def tryTransaction():
     except Exception as e:
         return jsonify({"error" : "tryTransaction, " + str(e)})
 
+@app.route("/registerAsHelper", methods=["POST"])
+def registerAsHelper():
+    username = request.json.get('username')
+    transactionID = request.json.get('transactionID')
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT id FROM users WHERE username=?", (username,))
+            userID = cur.fetchone()[0]
+            cur.execute("UPDATE transactions SET helper_id=? WHERE id=?", (userID, transactionID))
+            conn.commit()
+            return ""
+    except Exception as e:
+        return jsonify({"error" : "registerAsHelper, " + str(e)})
+    
+@app.route("/unregisterAsHelper", methods=["POST"])
+def unregisterAsHelper():
+    transactionID = request.json.get('transactionID')
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute("UPDATE transactions SET helper_id=NULL WHERE id=?", (transactionID,))
+            conn.commit()
+            return ""
+    except Exception as e:
+        return jsonify({"error" : "unregisterAsHelper, " + str(e)})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=env.get("PORT", 4859))

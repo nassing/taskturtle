@@ -12,6 +12,40 @@ export default function Transaction({username, transactionID}) {
   const [transactionPrice, setTransactionPrice] = useState(0);
   const [taskTitle, setTaskTitle] = useState('');
 
+  const registerAsHelper = () => {
+    fetch('http://localhost:4859/registerAsHelper', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({transactionID: transactionID, username: username})
+      })
+    .then(response => {
+      if (response.ok) {
+        getTransactionData();
+        } else {
+          console.log('Something went wrong ...');
+    }})
+      .catch(error => console.log(error.message));
+  }
+
+  const unregisterAsHelper = () => {
+    fetch('http://localhost:4859/unregisterAsHelper', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({transactionID: transactionID, username: username})
+      })
+    .then(response => {
+      if (response.ok) {
+        getTransactionData();
+        } else {
+          console.log('Something went wrong ...');
+    }})
+      .catch(error => console.log(error.message));
+  }
+
   const getTransactionData = () => {
     fetch('http://localhost:4859/getTransactionData', {
       method: 'POST',
@@ -84,7 +118,7 @@ export default function Transaction({username, transactionID}) {
             <button className="confirm-transaction">Pay</button>) 
             : null }
           { transactionState === TRANSACTIONSTATE.PENDING && receiverUsername === username ? (
-            <button className="cancel-help">Cancel</button>)
+            <button className="cancel-help" onClick={() => unregisterAsHelper()}>Cancel</button>)
             : null }
         </div>
 
@@ -92,7 +126,7 @@ export default function Transaction({username, transactionID}) {
           transactionState === TRANSACTIONSTATE.PENDING && receiverUsername === null ? (
             <div className="receiver">
               <p>Waiting for a helper...</p>
-              <button className="accept-help">Help</button>
+              <button className="accept-help" onClick={() => registerAsHelper()}>Help</button>
             </div>
           ) : (
             <div className="receiver">

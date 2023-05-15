@@ -3,20 +3,21 @@ pragma solidity ^0.8.13;
 
 // 1. Le requester crée une tâche avec un titre et une description
 // 2. Le helper s'inscrit pour la tâche et peut se désinscrire tant que la tâche n'est pas complétée
-// 3. Le requester peut marquer la tâche comme complétée si un helper est inscrit
-// 4. Tant que la tâche n'est pas complétée, le requester peut annuler la tâche.
-// 5. Une fois la tâche complétée, chacun peut noter l'autre
+// 3. Le validator s'inscrit pour la tâche et peut se désinscrire tant que la tâche n'est pas complétée
+// 4. Le validator peut marquer la tâche comme complétée s'il existe et si un helper est inscrit
+// 5. Tant que la tâche n'est pas complétée, le requester peut annuler la tâche.
 
-contract TaskTurtleV2 {
+contract TaskTurtleV3 {
     struct Task {
         address requester;
         address helper;
+        address validator;
         string title;
         string description;
         bool isCompleted;
         bool isCancelled;
-        uint8 requesterRating;
-        uint8 helperRating;
+        uint helperReward;
+        uint validatorReward;
     }
 
     mapping(uint256 => Task) public tasks;
@@ -25,13 +26,18 @@ contract TaskTurtleV2 {
     event TaskCreated(uint256 taskId, address requester);
     event HelperRegistered(uint256 taskId, address helper);
     event HelperUnregistered(uint256 taskId, address helper);
+    event ValidatorRegistered(uint256 taskId, address validator);
+    event ValidatorUnregistered(uint256 taskId, address validator);
     event TaskCompleted(uint256 taskId);
     event TaskCancelled(uint256 taskId);
+    event TaskUnvalidated(uint256 taskId);
     event TaskConfirmed(uint256 taskId);
-    event RatingGiven(uint256 taskId, address rater, uint8 rating);
 
     // La tâche est créée par le requester
-    function createTask(string memory _description, string memory _title) public {
+    function createTask(string memory _description, string memory _title, uint _helperReward, uint _validatorReward) public payable {
+        require(_helperReward > 0);
+        require(_validatorReward > 0);
+        require(msg.value >= _helperReward + _validatorReward, "Not enough funds to pay helpers and validators");
         currentTaskId++;
         tasks[currentTaskId] = Task({
             requester: msg.sender,
@@ -40,9 +46,11 @@ contract TaskTurtleV2 {
             description: _description,
             isCompleted: false,
             isCancelled: false,
-            requesterRating: 0,
-            helperRating: 0
+            helperReward: _helperReward,
+            validatorReward: _validatorReward
         });
+
+        payable(address(this)).transfer(msg.value); // On transfère les fonds au contrat
 
         emit TaskCreated(currentTaskId, msg.sender);
     }
@@ -68,14 +76,41 @@ contract TaskTurtleV2 {
         emit HelperUnregistered(_taskId, msg.sender);
     }
 
-    // Le requester peut marquer la tâche comme complétée
-    function completeTask(uint256 _taskId) public {
-        require(tasks[_taskId].helper != address(0), "Task does not have a helper assigned");
+    // Le validator s'inscrit pour la tâche
+    function registerAsValidator(uint256 _taskId) public {
+        require(tasks[_taskId].requester != address(0), "Task does not exist");
+        require(tasks[_taskId].validator == address(0), "Task already has a validator"); //Il ne peut il y avoir qu'un seul validator
         require(tasks[_taskId].isCompleted == false, "Task is already completed");
         require(tasks[_taskId].isCancelled == false, "Task is already cancelled");
-        require(tasks[_taskId].requester == msg.sender || tasks[_taskId].helper == msg.sender, "Only the requester or helper can complete the task");
+        tasks[_taskId].validator = msg.sender;
+
+        emit ValidatorRegistered(_taskId, msg.sender);
+    }
+
+    // Le validator peut se désinscrire de la tâche
+    function unregisterAsValidator(uint256 _taskId) public {
+        require(tasks[_taskId].validator == msg.sender, "Only the assigned validator can renounce the task");
+        require(tasks[_taskId].isCompleted == false, "Task is already completed");
+        require(tasks[_taskId].isCancelled == false, "Task is already cancelled");
+        tasks[_taskId].validator = address(0);
+
+        emit ValidatorUnregistered(_taskId, msg.sender);
+    }
+
+    // Le validator peut marquer la tâche comme complétée et le paiement est effectué
+    function completeTask(uint256 _taskId) public {
+        require(tasks[_taskId].helper != address(0), "Task does not have a helper assigned");
+        require(tasks[_taskId].validator != address(0), "Task does not have a validator assigned");
+        require(tasks[_taskId].isCompleted == false, "Task is already completed");
+        require(tasks[_taskId].isCancelled == false, "Task is already cancelled");
+        require(tasks[_taskId].validator == msg.sender, "Only the assigned validator can complete the task");
 
         tasks[_taskId].isCompleted = true;
+        
+        //On prends les fonds du contrat pour payer les helpers et le validator
+        payable(tasks[_taskId].helper).transfer(tasks[_taskId].helperReward);
+        payable(tasks[_taskId].validator).transfer(tasks[_taskId].validatorReward);
+
         emit TaskCompleted(_taskId);
     }
 
@@ -89,19 +124,11 @@ contract TaskTurtleV2 {
         emit TaskCancelled(_taskId);
     }
 
-    // Chacun peut noter l'autre
-    function rateTask(uint256 _taskId, uint8 _rating) public {
-        require(tasks[_taskId].isCompleted == true, "Task is not completed yet");
-        require(tasks[_taskId].isCancelled == false, "Task is cancelled");
-        require(_rating >= -1 && _rating <= 1, "Rating should be -1, 0, or 1");
-        require(tasks[_taskId].requester == msg.sender || tasks[_taskId].helper == msg.sender, "Only the requester or helper can rate the task");
-
-        if (tasks[_taskId].requester == msg.sender) {
-            tasks[_taskId].requesterRating = uint8(_rating);
-        } else {
-            tasks[_taskId].helperRating = uint8(_rating);
+    function getTasks() public view returns (Task[] memory) {
+        Task[] memory _tasks = new Task[](currentTaskId);
+        for (uint i = 0; i < currentTaskId; i++) {
+            _tasks[i] = tasks[i + 1];
         }
-
-        emit RatingGiven(_taskId, msg.sender, uint8(_rating));
+        return _tasks;
     }
 }

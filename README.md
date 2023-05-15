@@ -10,6 +10,8 @@ Il faut ensuite écrire la commande :  `migrate --network developmment` une fois
 
 Il est possible que vous rencontriez des problèmes lors du lancement de la blockchain locale : nous en avons également fait l'expérience.
 
+Si le réseau blockchain ne marche pas, essayer le commit 1da3c20c7e432c38319c0f6b11d72f93a28e727d
+
 Étant donné sa nature capricieuse, nous n'avons pas réellement pu tester la version 2 de notre application ni nos contrats Solidity. Néanmoins, les contrats sont écrits et devraient a priori fonctionner s'ils sont liés à l'application React.
 
 En effet, la gestion de la connexion à la blockchain a été entièrement intégrée à notre application, avec l'ensemble des transactions qui y sont stockées.

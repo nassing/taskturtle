@@ -1,5 +1,3 @@
-//Page pour demander de l'aide
-
 import React, {useEffect, useState} from 'react';
 import defaultImage from './bear.jpg';
 import Web3 from 'web3';
@@ -17,6 +15,7 @@ export default function ProfilePage({username}) {
 
   const web3 = new Web3('http://localhost:9545');
 
+  // On récupère les adresses de tous les contrats deploy sur Truffle
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,6 +35,7 @@ export default function ProfilePage({username}) {
     fetchData();
   }, []);
   
+  // On récupère l'adresse du contrat TaskTurtle, et on génère l'instance du contrat
   useEffect(() => {
     const taskAddress = contractAddresses.find(
       (contract) => contract.contractName === 'TaskTurtle'
@@ -51,6 +51,7 @@ export default function ProfilePage({username}) {
   useEffect( () => {handleUpdate()}, []);
   useEffect( () => {setImageExists(true)},[photoLink])
 
+  // On call la fonction du contrat !
   async function blockchainConnection() {
     if (taskContract) {
       const result = await taskContract.methods.sayHello().call();

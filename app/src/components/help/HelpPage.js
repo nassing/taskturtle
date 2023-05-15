@@ -1,7 +1,7 @@
 //Page pour aider
 
 import React, { useState, useEffect } from 'react';
-import PAGE from '../global/Enums';
+import {PAGE} from '../global/Enums';
 
 export default function HelpPage({username, getUser, setTransactionID, setCurrentPage}) {
 
@@ -25,7 +25,7 @@ export default function HelpPage({username, getUser, setTransactionID, setCurren
     .then(data => {
       setTaskList([]);
       for (let item of data) {
-        setTaskList(taskList => [...taskList, {id: item.id, title: item.title, description: item.description, user: item.user, userProfilePicture: "todo", taskImage: "todo", location: item.location, postDate: "todo", reward: item.reward, status: "uncompleted"}]);
+        setTaskList(taskList => [...taskList, {id: item.id, title: item.title, description: item.description, user: item.user, userProfilePicture: "todo", taskImage: "todo", location: item.location, postDate: "todo", reward: item.reward, status: "uncompleted", transaction_id : item.transaction_id}]);
       }
     })
     .catch(error => console.log(error.message));
@@ -79,7 +79,7 @@ export default function HelpPage({username, getUser, setTransactionID, setCurren
               <h1>{task.title}</h1>
             </div>
 
-            <div className="task-help-button" onClick={() => goToTransactionPage(task.id)}>
+            <div className="task-help-button" onClick={() => goToTransactionPage(task.transaction_id)}>
               <p>Help him</p>
             </div>
             

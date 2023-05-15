@@ -99,7 +99,10 @@ def submitTask():
             cur.execute("SELECT id FROM users WHERE username=?", (username,))
             try:
                 author_id = cur.fetchone()[0]
-                cur.execute("INSERT INTO tasks(title, description, reward, location, author_id) VALUES (?, ?, ?, ?, ?)", (taskTitle, taskDescription, taskReward, taskLocation, author_id))
+                cur.execute("INSERT INTO transactions(sender_id, price) VALUES (?, ?)", (author_id, taskReward))
+                conn.commit()
+                transaction_id = cur.lastrowid
+                cur.execute("INSERT INTO tasks(title, description, reward, location, author_id, transaction_id) VALUES (?, ?, ?, ?, ?, ?)", (taskTitle, taskDescription, taskReward, taskLocation, author_id, transaction_id))
                 conn.commit()
                 return ""
             except Exception as e:
@@ -204,26 +207,25 @@ def completeTask():
 
 @app.route("/getTransactionData", methods=["POST"])
 def getTransactionData():
-    transactionID = request.json.get('transactionID')
+    taskID = request.json.get('taskID')
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            cur.execute("SELECT sender_id, receiver_id, state, price, task_id FROM transactions WHERE id=?", (transactionID,))
+            cur.execute("SELECT transaction_id FROM tasks WHERE id=?", (taskID,))
             try:
+                transaction_id = cur.fetchone()
+                cur.execute("SELECT sender_id, receiver_id, state, price, task_id FROM transactions WHERE id=?", (transaction_id,))
                 transaction = cur.fetchone()
-                try:
-                    sender_id = transaction[0]
-                    cur.execute("SELECT username, link_to_profile_picture FROM users WHERE id=?", (sender_id,))
-                    senderUsername, senderPictureLink = cur.fetchone()
-                    receiver_id = transaction[1]
-                    cur.execute("SELECT username, link_to_profile_picture FROM users WHERE id=?", (receiver_id,))
-                    receiverUsername, receiverPictureLink = cur.fetchone()
-                    task_id = transaction[4]
-                    cur.execute("SELECT title FROM tasks WHERE id=?", (task_id,))
-                    taskTitle = cur.fetchone()[0]
-                    return jsonify({"senderUsername" : senderUsername, "receiverUsername" : receiverUsername, "senderPictureLink" : senderPictureLink, "receiverPictureLink" : receiverPictureLink, "transactionState": transaction[2], "transactionPrice": transaction[3], "taskTitle": taskTitle })
-                except:
-                    return jsonify({"error" : "Transaction not found"})
+                sender_id = transaction[0]
+                cur.execute("SELECT username, link_to_profile_picture FROM users WHERE id=?", (sender_id,))
+                senderUsername, senderPictureLink = cur.fetchone()
+                receiver_id = transaction[1]
+                cur.execute("SELECT username, link_to_profile_picture FROM users WHERE id=?", (receiver_id,))
+                receiverUsername, receiverPictureLink = cur.fetchone()
+                task_id = transaction[4]
+                cur.execute("SELECT title FROM tasks WHERE id=?", (task_id,))
+                taskTitle = cur.fetchone()[0]
+                return jsonify({"senderUsername" : senderUsername, "receiverUsername" : receiverUsername, "senderPictureLink" : senderPictureLink, "receiverPictureLink" : receiverPictureLink, "transactionState": transaction[2], "transactionPrice": transaction[3], "taskTitle": taskTitle })
             except:
                 return jsonify({"error" : "Transaction not found"})
     except Exception as e:

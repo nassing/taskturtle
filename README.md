@@ -1,7 +1,7 @@
 On a besoin de 3 CLI pour faire tourner l'app :
 
 `sudo ./start-network` pour lancer la blockchain locale. 
-Il faut ensuite écrire la commande :  `migrate --network developmment` une fois truffle lancé.
+Il faut ensuite écrire la commande :  `migrate --network development` une fois truffle lancé.
 
 `./start-api` pour lancer l'API
 
@@ -10,9 +10,10 @@ Il faut ensuite écrire la commande :  `migrate --network developmment` une fois
 
 Il est possible que vous rencontriez des problèmes lors du lancement de la blockchain locale : nous en avons également fait l'expérience.
 
-Si le réseau blockchain ne marche pas, essayer le commit 1da3c20c7e432c38319c0f6b11d72f93a28e727d sans déployer le réseau.
 
 Étant donné sa nature capricieuse, nous n'avons pas réellement pu tester la version 2 de notre application ni nos contrats Solidity. Néanmoins, les contrats sont écrits et devraient a priori fonctionner s'ils sont liés à l'application React.
+
+Cette version est une fonction simple fonctionnant avec un réseau blockchain, mais nous avons une version un peu plus avancée qui n'est pas reliée à la blockchain disponible sur le commit "Page transaction quasi terminé" 1da3c20c7e432c38319c0f6b11d72f93a28e727d. Il y a notamment une page de transaction qui n'est pas tout à fait aboutie car une partie du code a été faite plus tard sur le commit "Ajout contrat V2". Cette version n'est pas fonctionnelle car entre temps il y a eu le passage à la version simplifiée sur le réseau blockchain.
 
 En effet, la gestion de la connexion à la blockchain a été entièrement intégrée à notre application, avec l'ensemble des transactions qui y sont stockées.
 

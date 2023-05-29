@@ -30,21 +30,6 @@ app = Flask(__name__)
 
 CORS(app)
 
-app.secret_key = "d912e4303bd96c542d0ed89510d0b790e59ab30929da915710e802c424e65f97"
-
-
-oauth = OAuth(app)
-
-oauth.register(
-    "auth0",
-    client_id="cUPJqGCR1xcv7eiC4hQ4j8itnCN3Gh6a",
-    client_secret="knyOvxSSOoM2YiV_ZOXmrmnb4KK7cPfR2W6154YMJVS9Qt3D2YoddBMRX5oznTDN",
-    client_kwargs={
-        "scope": "openid profile email",
-    },
-    server_metadata_url=f'https://dev-a81ploq10be8yz2n.eu.auth0.com/.well-known/openid-configuration',
-)
-
 
 # Controllers API
 @app.route("/")
